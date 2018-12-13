@@ -88,7 +88,21 @@
         这表明了两个数值按位"异或"结果为 0 ，是这两个数值相等的必要充分条件，
         可以最为判断两个变量是否相等的条件。
         
+    4、作业题，用位移和位运算实现 10 进制转换为 2 进制
+    
+        def binary2(num):
+        if num == 0:
+            return '0'
+        else:
+    
+            return binary2(num >> 1) + str(num & 1)
+    
+    
+        if __name__ == '__main__':
         
+            num  = int(input("please a decimal:"))
+        
+            print((binary2(num)))    
       
         
         
