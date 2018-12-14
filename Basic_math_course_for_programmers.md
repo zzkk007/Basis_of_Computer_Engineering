@@ -202,7 +202,18 @@
         
         迭代法的思想很容易通过计算机语言中的循环语言来实现。
         
-    2、迭代法有什么具体应用？
+        迭代法的思想很容易通过计算机语言中的循环语言来实现，我们可以通过循环语句
+        让计算机重复执行迭代中的递推步骤，推到出变量的最终值。
+        
+    2、迭代法的基本步骤是什么？
+        
+        确定用于迭代的变量
+        建立迭代变量之间的递推关系
+        控制迭代过程
+        
+        
+        
+    3、迭代法有什么具体应用？
         
         a. 求数值的精确或者近似解。典型方法包括二分法(Bisection method)和牛顿迭代法(Newtin's method)
         
@@ -212,7 +223,7 @@
             很多时候机器学习的过程，就是根据已知的数据和一定的假设，求一个局部最优解，而迭代法
             可以帮助学习算法逐步搜索，直至发现这种解。
             
-    3、求数值解和查找匹配记录的两个应用
+    4、求数值解和查找匹配记录的两个应用
     
         a. 求方程的精确或者近似解
         
@@ -277,10 +288,66 @@
                 使用了 maxTry 来控制循环次数，没有使用 while(True) 循环，避免死循环，
                 虽然使用了 deltaThreshold ，理论上不会陷入死循环，但是出于良好的代码
                 的编程习惯，我们尽量避免产生的可能性。
-                
-             
+        
+        
+        b. 查找匹配记录:         
             
-                
+            二分法中的迭代式逼近，不仅可以帮助我们求得近似解，还可以帮助我们查找匹配的记录。
+            
+            代码如下：
+            
+            def binary_search(list, world):
+            
+                """
+                Description : 查找某个单词是否在列表中
+                :param list: 排序后的列表
+                :param world: 待查找的单词
+                :return: 是否发现待查找的单词
+                """
+                if list is None:
+                    return False
+                elif len(list) == 0:
+                    return  False
+            
+                left = 0
+                right = len(list) - 1
+            
+                while(left <= right):
+            
+                    middle = left + (right - left) // 2
+            
+                    if list[middle] == world:
+                        return  True
+                    else:
+            
+                        if list[middle] > world:
+                            right = middle - 1
+                        else:
+                            left = middle + 1
+            
+            if __name__ == '__main__':
+            
+                list_search = ['i', 'am', 'one', 'of', 'the', 'authors', 'in', 'geekbang']
+                list_search.sort()
+            
+                wordToFind = 'i'
+            
+                found = binary_search(list_search, wordToFind)
+            
+                if(found):
+                    print("found it")
+                else:
+                    print("not found it")     
+            
+    5、小结：
+    
+        人们并不擅长重复性的劳动，而计算机很适合做这样的事，这也是为什么
+        以重复为特点的迭代法在编程中有着广泛的应用，但是现实生活中我们往往
+        会忽略迭代法的使用，
+        所以，要观察问题的现象，思考其本质，看看不断更新变量值或者缩小搜索
+        的区间范围，是否可以获得最终的解，如果是，你可以尝试迭代法。
+        
+                    
                 
   
     
