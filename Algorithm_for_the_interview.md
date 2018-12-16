@@ -93,6 +93,91 @@
 """005 理论讲解：数组 & 链表 """
 
 
+    1、Array:
+
+        时间复杂度：
+            Access : O(1)
+            Insert : 平均 O(n)
+            Delete : 平均 O(n)
+
+    2、链表：
+
+        时间复杂度：
+            Access : O(n)
+            Insert : O(1)
+            Delete : O(1)
+
+"""006 面试题:反转一个单链表&判断链表是否有环"""
+
+    1、反转一个链表，
+        例如：
+         Input: 1 -> 2 -> 3 -> 4 -> 5 -> null
+        output: 5 -> 4 -> 3 -> 2 -> 1 -> null
+
+        例子：
+
+            class SingleNode(object):
+                def __init__(self, vaule):
+                        self.value = vaule
+                        self.next = None
+
+            class SingleLinkList(object):
+                """
+                    description : 一个单链表
+                """
+                def __init__(self):
+                    self.head = None
+
+                def SingleAdd(self, vaule):
+
+                    node = SingleNode(vaule)
+
+                    if self.head is None:
+                        self.head = node
+                    else:
+                        cur = self.head
+                        while cur.next is not None:
+                            cur = cur.next
+                        cur.next = node
+
+                def SinglePrint(self, cur):
+                    if cur is None:
+                        cur = self.head
+                    while cur is not None:
+                        print('{0}'.format(cur.value))
+                        cur = cur.next
+
+                def reverseList(self):
+                    cur, prev = self.head, None
+                    while cur is not None:
+                        # python 中多变量赋值，先算好等会右边的所有值，
+                        # 然后一次性赋值给左边。
+                        cur.next, prev, cur = prev, cur, cur.next
+                    return prev
+            if __name__ == "__main__":
+
+                listNode = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                SingleList = SingleLinkList()
+                for i in listNode:
+                    SingleList.SingleAdd(i)
+
+                SingleList.SinglePrint(None)
+
+                print("--------------------------")
+
+                list1 = SingleList.reverseList()
+
+                SingleList.SinglePrint(list1)
+
+
+
+
+
+
+
+
+
+
 
 
 
