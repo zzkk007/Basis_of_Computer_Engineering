@@ -53,25 +53,22 @@
         （target - nums[i]target−nums[i]）是否存在于表中。
         注意，该目标元素不能是 nums[i]nums[i] 本身！
 
-
         class Solution:
             def towSum(self, nums, target):
-
                 hash_map = dict()
                 for key, value in enumerate(nums):
-                    hash_map[key] = value
-
+                    hash_map[value] = key
                 for i in range(len(nums)):
-                    number = target - nums[i]   # 3
-
-                    #if number in hash_map.values() and
-
+                    number = target - nums[i]
+                    if number in hash_map and i != hash_map[number]:
+                        return [i, hash_map[number]]
 
         if __name__ == "__main__":
 
             twoS = Solution()
             list1 = [3, 3]
             print(twoS.towSum(list1, 6))
+
 
         复杂度分析：
 
