@@ -169,6 +169,15 @@
 
                 SingleList.SinglePrint(list1)
 
+    2、 给一个链表，反转他们相邻的节点
+
+        Example:
+
+          input : 1 -> 2 -> 3 -> 4
+         output : 2 -> 1 -> 4 -> 3
+
+
+
 
 
 
