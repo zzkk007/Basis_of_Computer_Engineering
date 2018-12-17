@@ -44,6 +44,12 @@ class SingleLinkList(object):
 
     def swapPairs(self):
         pre, pre.next = self, self.head
+        '''
+            pre = self
+            pre.next = self.head
+            self.next = self.head
+            
+        '''
         while pre.next and pre.next.next:
             a = pre.next
             b = a.next
@@ -75,8 +81,8 @@ if __name__ == "__main__":
 
     print("--------------------------")
 
-    #list1 = SingleList.swapPairs()
-    list1 = SingleList.reverseList()
+    list1 = SingleList.swapPairs()
+    #list1 = SingleList.reverseList()
 
     SingleList.SinglePrint(list1)
 
