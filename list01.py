@@ -53,8 +53,16 @@ class SingleLinkList(object):
         return self.next
 
     def testSelf(self):
-        pre, pre.next = self, self.head
-        return self.next
+        '''
+          pre, pre.next = self, self.head
+          return self.next
+
+        '''
+        # 这个 self.next，和 self.head, self.value 没有什么区别
+        # 仅仅是赋值了一个新的变量而已。
+        self.next = '123456'
+        print(self.next)
+
 
 if __name__ == "__main__":
 
@@ -76,5 +84,5 @@ if __name__ == "__main__":
     print("--------------------------")
 
     list2 = SingleList.testSelf()
-    SingleList.SinglePrint(list2)
+    #SingleList.SinglePrint(list2)
 
