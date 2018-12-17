@@ -31,11 +31,15 @@ class SingleLinkList(object):
             cur = cur.next
 
     def reverseList(self):
-        cur, prev = self.head, None
+        cur, prev, next = self.head, None, None
 
         while cur is not None:
             # python 中多变量赋值，先算好等会右边的所有值，然后一次性赋值给左边。
-            cur.next, prev, cur = prev, cur, cur.next
+            #cur.next, prev, cur = prev, cur, cur.next
+            next = cur.next
+            cur.next = prev
+            prev = cur
+            cur = next
         return prev
 
     def swapPairs(self):
@@ -46,6 +50,10 @@ class SingleLinkList(object):
 
             pre.next, b.next, a.next = b, a, b.next
             pre = a
+        return self.next
+
+    def testSelf(self):
+        pre, pre.next = self, self.head
         return self.next
 
 if __name__ == "__main__":
@@ -59,9 +67,14 @@ if __name__ == "__main__":
 
     print("--------------------------")
 
-    list1 = SingleList.swapPairs()
-
+    #list1 = SingleList.swapPairs()
+    list1 = SingleList.reverseList()
 
     SingleList.SinglePrint(list1)
 
+
+    print("--------------------------")
+
+    list2 = SingleList.testSelf()
+    SingleList.SinglePrint(list2)
 
