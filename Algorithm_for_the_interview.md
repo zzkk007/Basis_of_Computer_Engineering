@@ -265,6 +265,55 @@
                 return False
 
 
+""" 07 理论讲解：堆栈 和 队列"""
+
+    1、堆栈(Stack)和堆（Heap）是两个完全不同的东西
+        堆栈也就是栈-- First In Last Out（FILO）
+        push
+        pop
+
+    2、队列 Queue - First In First Out (FiFO)
+
+
+"""08 面试题：判断括号字符串是否合法 """"
+
+    1、例如下面字符串
+
+        "()"      合法
+        "()[]"    合法
+        "([)]"    不合法
+        "((([]))" 不合法
+        "]][["    不合法
+
+        用栈进行经典的解法：
+            a、左括号压栈
+            b、右括号和栈顶进行匹配，匹配成功是 pop 栈顶元素，不匹配不合法
+            c、如果最后栈为空，则合法。
+
+        时间复杂度 O(1) * n = O(n)
+
+    2、 代码如下：
+
+        def isValid(s):
+            """
+            :description : 判断字符串的合法性
+            :param s: 一个字符串
+            :return: 返回 boolean ,True 合法，False 不合法
+            """
+            stack = []
+            paren_map = {')': '(', ']': '[', '}': '{'}
+            for c in s:
+                # 不是 key 值
+                if c not in paren_map:
+                    stack.append(c)
+                elif not stack or paren_map[c] != stack.pop():
+                    return False
+            return not stack
+        if __name__ == "__main__":
+            str1 = "()()()(][){}{}[][[()]]"
+            print(isValid(str1))
+
+"""09 面试题："""
 
 
 
