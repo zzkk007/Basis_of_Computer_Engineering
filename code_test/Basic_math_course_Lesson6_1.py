@@ -1,67 +1,40 @@
 
-import copy
+def mergeSort(alist):
 
-class Lession6_1(object):
+    #当分解到列表只有一个值时，返回列表。
+    if len(alist) <= 1:
+        return alist
 
-    def merge_sort(self, items):
+    # 二分分解
+    num = len(alist) // 2
 
-        if items is None:
-            return None
+    left = mergeSort(alist[:num])
+    right = mergeSort(alist[num:])
 
-        if len(items) == 1:
-            return items
+    # 合并
+    return merge(left, right)
 
-        mid = len(items) / 2
+def merge(left, right):
 
-        left = copy.deepcopy(self.merge_sort(items[0:mid]))
-        right = copy.deepcopy(self.merge_sort(items[mid:len(items)]))
+    '''合并操作，将两个有序数列lstf,right 合并成一个更大的有序数组'''
+    #left 与 right的下标指针
+    l, r = 0, 0
+    result = []
 
-        left = self.merge_sort(left)
-        right = self.merge_sort(right)
-
-        self.merge(left, right)
-
-    def merge(self, alist, blist):
-        if alist is None:
-            alist = list()
-        if blist is None:
-            blist = list()
-
-        merged_one = list()
-
-        mi = 0
-        ai = 0
-        bi = 0
-
-        # 轮流从两个数组中取出较小的值，放入到合并的数组中
-        while ai < len(alist) and bi < len(blist):
-
-            if alist[ai] <= blist[bi]:
-                merged_one[mi] = alist[ai]
-                ai += 1
-            else:
-                merged_one[mi] = blist[bi]
-                bi += 1
-            mi += 1
-
-
-        # 将某个数组的剩余的数字放入合并后的数组中
-        if ai < len(alist):
-            for i in range(ai, len(alist)):
-                merged_one[mi] = alist[i]
-                mi += 1
+    while l < len(left) and r < len(right):
+        if left[l] < right[r]:
+            result.append(left[l])
+            l += 1
         else:
-            for i in range(bi, len(blist)):
-                merged_one[mi] = blist[bi]
-                mi += 1
-
-        return merged_one
+            result.append(right[r])
+            r += 1
+    result += left[l:]
+    result += right[r:]
+    return result
 
 if __name__ == "__main__":
 
-    clist = [4, 22, 2, 11, 67, 32, 90, 39, 43, 2]
-
-    dlist = Lession6_1()
-    elist = dlist.merge_sort(clist)
-    print(elist)
+    list1 = [54, 26, 93, 17, 77, 31, 44, 55, 20]
+    sortedList = mergeSort(list1)
+    print(sortedList)
 
