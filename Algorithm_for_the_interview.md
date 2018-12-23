@@ -313,8 +313,20 @@
             str1 = "()()()(][){}{}[][[()]]"
             print(isValid(str1))
 
-"""09 面试题："""
 
+"""09 面试题：用队列实现栈 & 用栈实现队列 """
+
+    1、用栈实现队列
+
+        使用两个栈来完成实现队列的操作，
+        一个栈名是：inputs,一个栈是：outputs,
+        用到三个函数 push, pop, peek,
+        每个进来的元素首先放到 inputs 栈中，如果出去，把inputs栈中的元素
+        push 到 outputs 栈中，从 outpusts 栈中 peek 元素，如果 outputs
+        栈不为空，新来的元素到放到 inputs 栈中，等到 outputs 为空，再 push
+        到 outputs 栈中。
+
+    2、用队列实现栈
 
 
 
