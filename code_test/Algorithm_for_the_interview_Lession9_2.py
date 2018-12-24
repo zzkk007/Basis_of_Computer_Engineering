@@ -1,59 +1,29 @@
+class Stock(object):
 
-class Queue(object):
     def __init__(self):
-        self.items = []
+        self.queueA = []
+        self.queueB = []
 
-    def is_empty(self):
-        return self.items == []
+    def push(self, node):
+        self.queueA.insert(0,node)
 
-    def length(self):
-        return len(self.items)
+    def pop(self):
+        if self.queueA==[]:
+            return None
 
-    def enqueue(self, item):
-        self.items.insert(0, item)
+        while len(self.queueA) != 1:
+            self.queueB.insert(0,self.queueA.pop())
 
-    def dequeue(self):
-        return self.items.pop()
+        self.queueA,self.queueB=self.queueB,self.queueA
 
-
-
-
-def stack_push(item):
-
-    if queue1.is_empty():
-        queue1.enqueue(item)
-
-def stack_pop():
-
-    if queue2.length() == 0:
-
-        for i in range(queue1.length() - 1):
-            queue2.enqueue(queue1.dequeue())
-
-        print(queue1.dequeue())
-
-    elif queue1.length() == 0:
-
-        for i in range(queue2.length() - 1):
-            queue1.enqueue(queue2.dequeue())
-
-        print(queue2.dequeue())
-
-    else:
-        print("error!!")
+        return self.queueB.pop()
 
 
-if __name__ == "__main__":
-
-    queue1 = Queue()
-    queue2 = Queue()
-
-    for i in range(10):
-        stack_push(i)
-
-    stack_pop()
-
-
+stack1 = Stock()
+stack1.push(1)
+stack1.push(2)
+print(stack1.pop())
+print(stack1.pop())
 
 
 

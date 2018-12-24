@@ -1,42 +1,30 @@
-class Stack(object):
+class Queue:
     def __init__(self):
-        self.items = []
+        self.stockA=[]
+        self.stockB=[]
 
-    def is_empty(self):
-        return self.items is None
-
-    def push(self, num):
-        self.items.append(num)
+    def push(self, node):
+        self.stockA.append(node)
 
     def pop(self):
-        if self.items is not None:
-            return self.items.pop()
-        else:
-            return None
 
-    def peek(self):
-        if self.items is not None:
-            return self.items[len(self.items) - 1]
+        if self.stockB==[]:
+            for i in range(len(self.stockA)):
+                self.stockB.append(self.stockA.pop())
+        return self.stockB.pop()
 
-    def len(self):
-        return len(self.items)
+queue = Queue()
 
+queue.push(1)
+queue.push(2)
+queue.push(3)
 
-if __name__ == "__main__":
+print(queue.pop())
+print(queue.pop())
+print(queue.pop())
 
-    inputs = Stack()
-    outputs = Stack()
-
-    for i in range(10):
-        inputs.push(i)
-
-    while inputs.len():
-        for i in range(inputs.len()):
-            outputs.push(inputs.pop())
-
-    for i in range(outputs.len()):
-        print(outputs.pop())
-
+queue.push(4)
+print(queue.pop())
 
 
 
