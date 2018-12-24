@@ -16,8 +16,7 @@ class Queue(object):
         return self.items.pop()
 
 
-queue1 = Queue()
-queue2 = Queue()
+
 
 def stack_push(item):
 
@@ -46,10 +45,14 @@ def stack_pop():
 
 if __name__ == "__main__":
 
+    queue1 = Queue()
+    queue2 = Queue()
+
     for i in range(10):
         stack_push(i)
-        
+
     stack_pop()
+
 
 
 
