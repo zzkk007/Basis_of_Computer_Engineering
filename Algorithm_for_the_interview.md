@@ -370,9 +370,30 @@
 """11: 面试题 返回数据流中的第 k 大元素"""
     
         
+    class KthLargest{
         
+        final PriorityQueue<Integer> q;
+        final int k;
+        public KthLargest(int k, int [] a){
+            this.k = k
+            q = new priorityQueue<>(k);
+            for (int n : a)
+                add(n);
+        }
         
+        public int add(int n){
             
+            if (q.size() < k)
+                q.offer(n);
+            else if (q.peek() < n){
+                q.poll();
+                q.offer();
+            }
+            return q.peek();
+        }
+    }     
+        
+"""12:"""
         
         
     
