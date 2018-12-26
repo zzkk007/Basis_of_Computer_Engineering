@@ -16,7 +16,7 @@ def getSqureRoot(n, deltaThreshold, maxTry):
     max = float(n)
 
     for i in range(maxTry):
-
+        # middle = float(min + (max - min)/2)
         middle = float((min + max) / 2)
         square = float(middle * middle)
         delta = float(abs((square / n) - 1))
