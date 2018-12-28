@@ -43,14 +43,31 @@ def create_dict():
 
 
 
-
-def Lesson7_1():
+import copy
+def Lesson7_1(horses, result):
 
     q_horses_time = dict(q1 = 1.0, q2 = 2.0, q3 = 3.0)
     t_horses_time = dict(t1 = 1.5, t2 = 2.5, t3 = 3.5)
 
     q_horses = ['q1','q2','q3']
     t_horses = ['t1','t2','t3']
+
+    # 所有的马都已经出战，判断那方获胜，输出结果
+    if len(horses) == 0:
+        print(result)
+
+        cmp()
+
+        for i in range(len(horses)):
+            new_result = copy.deepcopy(result)
+            new_result.append(horses.get(i))
+
+            rest_horses = copy.deepcopy(horses)
+            rest_horses.remove(i)
+
+
+
+
 
 
 if __name__ == "__main__":
