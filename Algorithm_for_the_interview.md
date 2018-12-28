@@ -407,7 +407,28 @@
     
     2、双端对列（deque） 入队列，维护队列。
         时间复杂度 O(N * 1)
+
+
+"""13: 理论讲解 哈希表"""
+
+    映射（Map） & 集合（Set）
     
+    1、HashTable & Hash Function & Collisions (哈希碰撞)
+    
+    2、Map VS Set
+    
+    
+    3、HashMap VS TreeMap、 HashSet VS TreeSet
+    
+        Map 和 Set 的实现一般由两种方式(HashMap，TreeMap)、(HashSet，TreeSet)
+        
+        两种实现方式的功能是一样的，不同的是底层数据的存储方式，一种是用Hash Table
+        存储，一种使用 binary tree 存储。HashTable 查询时 O(1) 的时间复杂度，
+        后者是 Log2N 的时间复杂度。有 TreeMap，TreeSet 是相对有序存储的。
+   
+    4、 python dict 使用（HashMap实现的）orderdict 是用（TreeMap） 实现的。
+    
+      
         
     
            
