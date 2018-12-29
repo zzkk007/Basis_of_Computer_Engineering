@@ -599,8 +599,59 @@
             (3) 另外，因为返回的 error 是个接口（其中只有一个方法 Error()）,返回一个 string
                 所以你可以扩展自定义的错误处理。
                 
-            但即使像 Go 这样的语言能让错误处理语义更清楚，而且还有
-
+            但即使像 Go 这样的语言能让错误处理语义更清楚，而且还有可扩展性，也有问题。
+            如果写一段 Go 语言，你就会明白其中的痛苦---if err != nil 这样的语句简直
+            是写到吐。
+    
+    3、资源清理：
+    
+        程序出错时需要对已分配的一些资源做清理，在传统的玩法下，每一步的错误都要去清理前面
+        已经分配好的资源，于是就出现了 go to fail 这样的错误处理模式。
+        
+            # define FREE(P) if (p){free(p); p=NULL}
+            mian()
+            {
+                char *fname = NULL;
+                fname = (char *)calloc(20, sizeof(char));
+                if(fname == NULL)
+                {
+                    goto fail;
+                }
+             
+            fail:
+                FREE(fname);   
+                ReportError(ERR_NO_MEMORY)
+            }
+            
+        这样的处理方式虽然可以，但是会有潜质的问题，主要的一个问题就是你不能在中间的代码中
+        有 return 语句，因为你需要清理资源，在维护这样的代码是需要格外的小心，容易造成内容泄露。
+        
+        于是， C++ 的 RALL(Resource Acquisition Is Initialization) 机制使用面向对象的特性
+        可以容易处理这个事情。RALL 其实使用 C++ 类的机制，在构造函数中分配资源，在析构函数中
+        释放资源。
+        
+        在 Go 语言中，使用 defer 关键字也可以做到这样的效果。
+        
+    4、异常捕获处理：
+    
+        上面，我们讲了错误检查和程序出错之后资源的清理着两个事，能把这个事做的比较好的其实是
+         try -- catch -- finally 这个编程模式。
+         
+            try {
+                    ... // 正常业务代码
+            } catch (Exception1 e ){
+                    ... // 处理异常 Exception1 的代码
+            } catch (Exception2 e){
+                    ... // 处理异常 Exception2 的代码
+            } finally{
+                ... // 资源清理的代码
+            }
+        
+            
+            
+            
+            
+           
 
 
 
