@@ -1,4 +1,3 @@
-
 def create_dict():
 
     # 1 创建空字典
@@ -40,40 +39,41 @@ def create_dict():
     dict8 = dict(zip(list[::2], list[1::2]),)
     print(dict8)
 
-
-
-
 import copy
+def compare(t, q):
+    t_won_cnt = 0
+    for i in len(t):
+        print("t_horses_time:{0},q_horse_time:{1}" % (t[i], q[i]))
+        if(t[i] < q[i]):
+            t_won_cnt += 1
+
+    if t_won_cnt > len(t)//2:
+        print("t win")
+    else:
+        print("q win")
+
+
+
 def Lesson7_1(horses, result):
 
-    q_horses_time = dict(q1 = 1.0, q2 = 2.0, q3 = 3.0)
-    t_horses_time = dict(t1 = 1.5, t2 = 2.5, t3 = 3.5)
-
-    q_horses = ['q1','q2','q3']
-    t_horses = ['t1','t2','t3']
-
-    # 所有的马都已经出战，判断那方获胜，输出结果
     if len(horses) == 0:
         print(result)
-
-        cmp()
+        compare(result, q_horses)
 
         for i in range(len(horses)):
             new_result = copy.deepcopy(result)
-            new_result.append(horses.get(i))
+            new_result.append(horses[i])
 
             rest_horses = copy.deepcopy(horses)
             rest_horses.remove(i)
-
-
-
-
+            Lesson7_1(rest_horses, new_result)
 
 
 if __name__ == "__main__":
 
-    #create_dict()
-    Lesson7_1()
+    q_horses_time = dict(q1=1.0, q2=2.0, q3=3.0)
+    t_horses_time = dict(t1=1.5, t2=2.5, t3=3.5)
+    q_horses = ['q1', 'q2', 'q3']
+    horses = ['t1', 't2', 't3']
 
-
-
+    Lesson7_1(horses, [])
