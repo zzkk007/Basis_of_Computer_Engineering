@@ -42,7 +42,7 @@ def create_dict():
 import copy
 def compare(t, q):
     t_won_cnt = 0
-    for i in len(t):
+    for i in range(len(t)):
         print("t_horses_time:{0},q_horse_time:{1}" % (t[i], q[i]))
         if(t[i] < q[i]):
             t_won_cnt += 1
