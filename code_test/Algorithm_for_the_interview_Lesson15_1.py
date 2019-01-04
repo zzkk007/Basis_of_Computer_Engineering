@@ -23,6 +23,7 @@ class Solution2(object):
 # 1遍哈希表：
 
 class Solution3(object):
+
     def towSum(self, nums, target):
         hash_map = dict()
         for index, x in enumerate(nums):
