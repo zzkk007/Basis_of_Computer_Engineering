@@ -3,11 +3,13 @@
 
 class Solution1(object):
     def threeSum(self, nums, target):
+        res = []
         for i in range(len(nums) - 2):
             for j in range(i + 1, len(nums) -1 ):
                 for k in range(i + 2, len(nums)):
                     if target == (nums[i] + nums[j] + nums[k]):
-                        return [i, j, k]
+                        res.append((nums[i], nums[j], nums[k]))
+        return res
 
 
 class Solution2(object):
@@ -62,6 +64,6 @@ class Solution3(object):
         return res
 
 if __name__ == "__main__":
-    twoS = Solution2()
+    twoS = Solution1()
     list1 = [-1, 0, 1, 2, -1, -4]
-    print(list(twoS.threeSum(list1)))
+    print(list(twoS.threeSum(list1, 0)))
