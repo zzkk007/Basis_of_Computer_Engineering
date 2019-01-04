@@ -507,7 +507,64 @@
 
     即两个单词有相同的字母组成。如 'rat' 和 'tar'
     
-    第一种解法是：对两个字母进行排序，然后比较是否相等，
+    第一种解法是：
+        
+        对两个字母进行排序，然后比较是否相等。
+        这种时间复杂度是 NlogN
+        
+                    
+        def lesson12_1(a, b):
+            return sorted(a) == sorted(b)
+    
+    第二种解法：
+        
+        使用 map 格式，把字符串,key:value 格式，key 为字母的，value 为个数，比较两个map是否相等。
+        这种时间复杂度是 N，但是空间复杂度多了一个map。
+        # dict.get(key, default=None)
+        # key -- 字典中要查找的键。
+        # default -- 如果指定键的值不存在时，返回该默认值值。
+        # 
+        # 返回值 : 返回指定键的值，如果值不在字典中返回默认值None。
+        
+        def lesson12_2(a, b):
+            dict1, dict2 = {}, {}
+        
+            for item in a:
+                dict1[item] = dict1.get(item, 0) + 1
+        
+            for item in b:
+                dict2[item] = dict2.get(item, 0) + 1
+        
+            return dict1 == dict2
+        
+        
+        def lesson12_3(a, b):
+            dict1, dict2 = [0]*26, [0]*26
+            for item in a:
+                dict1[ord(item) - ord('a')] += 1
+            for item in b:
+                dict2[ord(item) - ord('a')] += 1
+                
+            print(dict1)
+            print(dict2)
+            # [1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0]
+            # [1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0]
+        
+            return dict1 == dict2
+        
+        
+        if __name__ == "__main__":
+        
+            #print(lesson12_1(a = 'rat', b = 'adr'))
+            print(lesson12_2(a = 'rat', b = 'tar'))    
+        
+             
+        
+                
+        
+        
+                
+    
     
     
     
