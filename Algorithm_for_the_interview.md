@@ -407,8 +407,35 @@
     
     2、双端对列（deque） 入队列，维护队列。
         时间复杂度 O(N * 1)
-
-
+        
+        # Sliding Window Maxunum
+    
+        def maxSlidingWindow(nums, k):
+            if not nums:
+                return []
+        
+            window, res = [], []
+        
+            for i, x in enumerate(nums):
+                if i >= k and window[0] <= i - k:
+                    window.pop(0)
+        
+                while window and nums[window[-1]] <= x:
+                    window.pop()
+                window.append(i)
+        
+                if i >= k - 1:
+                    res.append(nums[window[0]])
+            return res
+        
+        if __name__ == "__main__":
+        
+            nums = [1, 3, -1, -3, 5, 3, 6]
+            k = 3
+            print(maxSlidingWindow(nums, k))
+        
+        
+             
 """13: 理论讲解 哈希表"""
 
     1、映射（Map） & 集合（Set）:
@@ -475,5 +502,19 @@
    
     5、 python dict 使用（HashMap实现的）orderdict 是用（TreeMap） 实现的。
     
- 
+
+"""14: 有效字母异位词"""
+
+    即两个单词有相同的字母组成。如 'rat' 和 'tar'
+    
+    第一种解法是：对两个字母进行排序，然后比较是否相等，
+    
+    
+    
+    
+
+
+
+
+
 "-----------------------------------------------------------------"
