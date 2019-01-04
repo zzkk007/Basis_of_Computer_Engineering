@@ -557,7 +557,12 @@
         
             #print(lesson12_1(a = 'rat', b = 'adr'))
             print(lesson12_2(a = 'rat', b = 'tar'))    
-        
+
+"""15 两数之和 """
+
+    第一种方法：暴力破解法
+    
+        使用        
              
         
                 

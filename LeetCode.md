@@ -20,8 +20,8 @@
     1、暴力解法:
 
         class Solution:
-        def tomSum(self, nums, target):
-            for i in range(len(nums) - 1)
+        def towSum(self, nums, target):
+            for i in range(len(nums) - 1):
                 for j in range(i + 1, len(nums)):
                     if target == (nums[i] + nums[j]):
                         return [i, j]
@@ -51,7 +51,7 @@
         在第一次迭代中，我们将每个元素的值和它的索引添加到表中。
         然后，在第二次迭代中，我们将检查每个元素所对应的目标元素
         （target - nums[i]target−nums[i]）是否存在于表中。
-        注意，该目标元素不能是 nums[i]nums[i] 本身！
+        注意，该目标元素不能是 nums[i] 本身！
 
         class Solution:
             def towSum(self, nums, target):
@@ -85,9 +85,8 @@
         如果它存在，那我们已经找到了对应解，并立即将其返回。
 
 
-        class Solution:
-
-        def twoSum(self, nums, target):
+    class Solution:
+        def towSum(self, nums, target):
             """
             :type nums: List[int]
             :type target: int
