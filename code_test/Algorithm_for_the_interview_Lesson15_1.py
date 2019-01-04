@@ -20,7 +20,7 @@ class Solution2(object):
             if number in hash_map and i != hash_map[number]:
                 return [i, hash_map[number]]
 
-# 1遍哈希表：
+# 3、 1遍哈希表：
 
 class Solution3(object):
 
