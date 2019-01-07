@@ -185,8 +185,72 @@
         
 """04: 复杂度分析（下）： 浅析最坏、最好、平均、均摊时间复杂度"""        
         
-    
+    1、最好、最坏情况时间复杂度：（best/worst case time complexity）
+        
+        # n 表示数组 array 的长度
+        int find(int [] array, int n, int x){
+            int i = 0;
+            int pos = -1;
+            for(; i<n; ++i){
+                if (array[i] == x) pos = i;
+            }
+            return pos;
+        }
+        
+        # n 表示数组 array 的长度
+        
+        int find(int[] arrar, int n, int x){
+            int i = 0;
+            int pos = -1;
+            for(; i < n; ++i){
+                if (array[i] == x){
+                    pos = i;
+                    break;
+                }
+            }
+            return pos;
+        }       
             
+        因为，要查找的变量 x 可能出现在数组的任意位置。如果数组中第一个元素正好是要查询的变量 x
+        那么就不需要遍历剩下的 n - 1 个数据了，那时间复杂度就是O(1), 如果数组中不存在，就需要
+        把整个数组遍历一遍，时间复杂度就是 O(n)。不同情况，时间复杂度不同。
+        
+        为了表示代码在不同情况下不同时间复杂度，我们需要引起三个概念：最好情况时间复杂度、最坏情况时间复杂度和
+        平均情况时间复杂度。
+        
+        平均情况时间复杂度:
+            最好情况和最坏情况时间复杂度都是极端情况下的代码复杂度，发生的概率并不大。为了更好的表示
+            平均情况下的复杂度，我们引入了另一个概念：平均情况复杂度，简称平均复杂度。
+            
+            要查找变量 x 在数组中的位置， 有 n + 1 种情况：在数组的 0 ~ n-1 位置中和不在数组中。
+            我们把每种情况，查找需要遍历的元素个数累加起来，然后再除以 n + 1，就可以得到需要的元素个数
+            的平均值 (1+2+3+...+n+n)/(n+1) = n(n+3)/2(n+1) 时间复杂度的大 O 标记法中，可以省略掉系数
+            低级和常量，因此得到的时间复杂度是 O(n)
+    
+    2、均摊时间复杂度：
+    
+        # array 表示一个长度为 n 的数组
+        # 代码中的 array.length 就等于 n
+        
+        int[] array = new int[n];
+        int count = 0;
+        void insert(int val){
+            if (count == array.length){
+                int sum = 0;
+                for(int i=0; i< array.length; ++i){
+                    sum = sum + array[i];
+                }
+                array[0] = sum;
+                count = 1;
+            }
+            array[count]= val;
+            ++count;
+        }
+        
+        均摊时间复杂度就是一种特殊的平均时间复杂度。
+                 
+   
+        
         
                   
         
