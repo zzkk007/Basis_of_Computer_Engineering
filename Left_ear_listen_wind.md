@@ -746,16 +746,119 @@
         在做异步请求的时候，注册几个 OnSuccess()、OnFailure() 这样的函数，让另一个线程中运行
         的异步代码来回调过来。
         
-    2、 JavaScript 异步编程的处理错误：
+    2、 JavaScript 异步编程的处理错误: 
+    
+        function successCallback(result){
+            console.log("It successed with" + result);  
+        }
         
+        function failureCalllback(error){
         
+            console.log("It failed with" + error);
+        }
+        
+        doSomething(successCallback, failureCallback);
+        
+        通过注册错误处理的回调函数，让异步执行的函数在出错的时候，调用被注册进来的错误处理函数，
+        这样的方式比较好地解决了程序的错误处理。而出错的语义从返回码，异常捕捉到了之间耦合错误
+        处理函数的样子。
+        
+        但是，如果我们需要把几个异步函数执行顺序的话，就会出现所谓的 Callback Hell 的问题：
+        
+            doSomething(function(result)){
+                doSomethingEls(result, function(newResult)){
+                    doThridThing(newresult,function(finalResult)){
+                        console.log('Got the final result:' + finalResult);
+                    },failureCallback);
+                },failureCallback);
+            },failureCallback);
+        
+        这样层层嵌套中需要注册的错误处理函数也有可能完全不一样，导致代码混乱，难理解，难阅读。
+        
+    3、一般来说，在异步编程的实践里，我们会用 Promise 模式来处理。如下（箭头表达式）
+    
+        doSomething()
+        .then(result => doSomethingElse(result))
+        .then(newResult => doThreadThing(newResult))
+        .then(finalResult => {
+            console.log(`Got the final result: ${fianlResult}`);
+        }).catch(failureCallback);
+        
+        上面代码中的 then() 和 catch() 方法就是 Promise 对象的方法， then() 方法可以
+        把各个异步的函数给串联起来，而catch() 方法则是出错的处理。
+        
+        上面是级联式的调用方式，这就要我们的doSomething() 函数返回Promise 对象，下面这个
+        函数相关代码示例：
+        
+            function doSomethin(){
+                let promise = new Promise();
+                let xhr = new XMLHttpRequest();
+                xhr.open('GET','http:..',true);
+                
+                xhr.onload = function(e){
+                if (this.status === 200){
+                    results = JSON.parse(this.responseText);
+                    promise.resolve(result); //成功时，调用 resolve() 方法
+                }
+                }；
+                
+                xhr.onerror = function(e){
+                    promise.reject(e); //失败时，调用 reject() 方法。
+                }; 
+                
+                xhr.send();
+                return promise;
+            }    
+        
+    
+    4、错误处理的最佳实践：
+    
+        （1）统一分类的错误字典：
+            无论你是使用错误码，还是异常捕捉，都需要认证统一做好错误分类。如HTTP的4XX表示客户端，5XX表示服务器。
+        
+        （2）同类的定义最好是可以扩展的。
+            方便代码重用
          
-         
+        （3）定义错误的严重程度：
+            Fatal: 重大错误
+            Error: 资源或需求不满足
+            Warning: 不一定是错误但是要注意
+            Info: 不是错误只是一个信息
+            Debug: 内存开发人员用于调试程序的。
+            
+        （4）错误日志的输出最好使用错误码，而不是错误信息
+            打印错误日志的时候，应该使用统一的格式。这样有利于日志分析软件进行监控。
+            
+        （5）忽略错误最好有日志
         
-           
+        （6）对于同一个地方不停的报错，最好不要都打到日志里。
+            这样导致其他日志被淹没，也会导致日志文件太大，最好实践是，打出一个错误以及出现的次数。
+            
+        （7）不要用错误处理逻辑来处理业务逻辑：
+            也就是说，不要用异常捕捉这样的方式来处理业务逻辑，而应该用条件判断。
+            异常捕捉用来处理不期望发生的事情，而错误码则用来处理可能会发生的事情。
+            
+        （8）对于同类的错误处理，用一样的模式。
+        
+        （9）尽可能在错误发生的地方处理错误
+        
+        （10）向上尽可能地返回原始的错误。
+        
+        （11）处理错误时，总是要清理已分配的资源
+        
+        （12）不推荐在循环体里处理错误
+                try..catch 放在循环体外
+                
+        （13）不要把大量的代码放在同一个 try 语句块内
+        
+        （14）为你的错误定义提供清楚的文档以及每种错误的代码示例
+        
+        （15）对于异步的方式，推荐使用 Promise 模式处理错误。
+        
+        （16）对于分布式的系统，推荐使用 APM 相关的软件。
             
            
-
+""""""
 
 
 
