@@ -858,8 +858,26 @@
         （16）对于分布式的系统，推荐使用 APM 相关的软件。
             
            
-""""""
+"""魔数 0x5f3759df"""
 
+    《神雷之锤 3 竞技场》 源代码的一个函数(已经剥离了 C 语言预处理器的指令)
+    
+        float Q_rsqrt(float number)
+        {
+            long i;
+            float x2, y;
+            const float threehalfs = 1.5F;
+            
+            x2 = number * 0.5F;
+            y = number;
+            i = *(long *) &y; //evil floating point bit level hacking
+            i = 0x5f3759df - (i >> 1); //what the fuck
+            y = *(float *) &i;
+            y = y *(threehalfs - ( x2 * y * y));
+            return y; 
+            
+        
+        }
 
 
 
