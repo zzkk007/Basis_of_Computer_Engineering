@@ -1141,6 +1141,28 @@
     
         另外，我们还可以用变量 prefix 表示当前结点之前的前缀，用变量 explanation 表示某个单词的解释。
             
+        public class TreeNode{
+            
+            public char lable;   //结点的名称，在前缀树里的单个字母
+            //使用哈希映射存放子结点，哈希便于确认是否已经添加过某个字母对应的结点。
+            public HashMap<Character, TreeNode> sons = null;
+            //从根结点到当前结点这条通路上，全部字母所组成的前缀，例如 b->o->y,对于字母 o结点而言，前缀是b,对于字母y来说，前缀是bo
+            public String prefix = null; 
+            //词条的解释
+            public String explanation = null;
+            
+            //初始化
+            public TreeNode(char l, String pre, String exp){
+                label = l;
+                prefix = pre;
+                explanation = exp;
+                sons = new HashMap<>();
+            }
+        }
+       
+        为什么结点的定义没有边呢？
+            实际上，这里的有向边表达的是父子结点之间的关系，这种关系用 sons 变量来存储父结点。
+            
         
         
         
