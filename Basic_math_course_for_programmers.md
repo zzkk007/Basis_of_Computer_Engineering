@@ -1164,7 +1164,23 @@
             实际上，这里的有向边表达的是父子结点之间的关系，这种关系用 sons 变量来存储父结点。
             
         
+        需要注意的是，我们需要动态地构建这棵树，每当接收一个新单词时，代码都有扫描这个单词的每一个字母，
+        并使用当前的前缀树进行匹配，如果匹配到某个结点，发现相应的字母结点并不存在，那么就建立一个新的树结点。
+        看下面的代码，str 表示还未处理的字符串，parent 表示父结点。
         
+        
+        // 处理当前字符串的第一个字母
+        char c = str.toChArray()[0]
+        TreeNode found = null;
+        
+        // 如果字母结点已经存在于当前父结点之下，找到它，否则就新生成一个。
+        if (parent.sons.containsKey(c)){
+            found = parent.sons,.get(c);
+        }else{
+            TreeNode son = new TreeNode(c,pre,"");
+            parent.sons.put(c,son);
+            found = son;
+        }
         
         
         
