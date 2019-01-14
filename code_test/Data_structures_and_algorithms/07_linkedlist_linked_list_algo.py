@@ -54,6 +54,7 @@ def merge_sorted_list(l1: Node, l2: Node) -> Optional[Node]:
                 current._next = p2
                 p2 = p2._next
             current = current._next
+
         current._next = p1 if p1 else p2
         return fake_head._next
     return l1 or l2
