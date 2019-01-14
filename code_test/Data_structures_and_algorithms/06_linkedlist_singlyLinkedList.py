@@ -265,8 +265,40 @@ class SinglyLinkedList(object):
         return False
 
 
+def reverse(head):
+    reverse_head = None
+    while head:
+        next = head._next
+        head._next = reverse_head
+        reverse_head = head
+        head = next
+
+    return reverse_head
 
 
+def is_palindrome(l):
+    '''check a single-linked list whether a palindrome
+    '''
+    l.print_all()
+    slow = l.__head
+    fast = l.__head
+    position = 0
 
+    while fast and fast.next:
+        slow = slow._next
+        fast = fast._next.next
+        position += 1
 
+    reverse_node = reverse(slow)
+
+    head_node = l.__head
+    is_palin = True
+    while(head_node and reverse_node):
+        if(head_node.data == reverse_node.data):
+            head_node=head_node._next
+            reverse_node = reverse_node._next
+        else:
+            is_palin = False
+            break
+    return True
 
