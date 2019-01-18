@@ -880,6 +880,22 @@
         }
 
 
+"""14 推荐阅读：机器学习 101"""
+
+    机器学习分两种方法，监督式学习（Supervised Learning）和非监督（Unsupervised Learning）.
+    
+    1、监督式学习：
+    
+        
+
+
+
+
+
+
+
+
+
 
 
 
