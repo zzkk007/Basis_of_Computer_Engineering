@@ -2121,8 +2121,46 @@
         不是按顺序存放的数据结构（数据容器）。所以，如果找不到一种泛型的数据结构的操作方式
         （如遍历、查找、增加、删除、修改...），那么任何的算法或是程序都不可能做到真正意义上的泛型。
         
+        除了 search() 函数的 “遍历操作” 之外，还有 search 函数的返回值，是一个整型的索引下标。
+        这个整型的下标对于“对于顺序的数据结构”是没有问题的，但是对于“非顺序的数据结构”在语义上存在问题。
+        比如，我们要在一个 hash table 中查找一个 key,返回什么呢？一定不是返回“索引下标”，因为在hash table
+        这样的数据结构中，数据的存放位置不是顺序表，而且还会因为容量不够的问题被 hash 后改变，所以
+        返回下标是没有意义的。
         
-    
+        对此，我们要把这个事做得泛型和通用一些。如果找到，返回找到的这个元素的一个指针(地址)会更靠谱一些。
+        所以，为了解决泛型的问题，我们需要动用以下几个 C++ 的技术。
+        
+            a. 使用模板技术来抽象类型，这样可以写出类型无关的数据结构（数据容器）
+            
+            b. 使用一个迭代器来遍历或是操作数据结构内的元素。 
+        
+        重温一下 C 语言版的代码：
+        
+            int search(void *a, size_t size, void * target, size_t elem_size, int(*cmpFn)(void *, void *))
+            {
+                for(int i=0; i< size; i++){
+                    if(cmpFn(a+elem_size*i, target) == 0){
+                        return i;
+                    }
+                }
+                return -1;
+            }
+            
+        再看一下 C++ 泛型版本的代码：
+        
+            template<typename T, typename Iter>
+            Iter search(Iter pStart, Iter pEnd, T target)
+            {
+                for(Iter p = pStart; p != pEnd; p++){
+                    if(*p == target)
+                        reutrn p;
+                }
+                return NULL;
+            }               
+        
+        在 C++ 的泛型版本中，我们可以看到：
+        
+                           
                        
                     
             
