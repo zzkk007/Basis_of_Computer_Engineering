@@ -2313,21 +2313,113 @@
                 double salary;
             }
             
-        现在我们想计算员工的总薪水，或是总休假天数。
-        
-            vector<Employee> staff;
-            sum(staff.begin(), staff.end(),0);
-        
-        我们的 sum 完全不知道怎么搞了，因为要累加的 Employee 类中的不同字段，即便我们的 Employee 中重载了 + 操作
-        也不知道要加哪个字段。
-        
-        另外，我们可以还会有：平均值average, 求最小值 min, 求最大值 max, 求中位数 mean 等等。
-        
-        
+            现在我们想计算员工的总薪水，或是总休假天数。
             
+                vector<Employee> staff;
+                sum(staff.begin(), staff.end(),0);
+            
+            我们的 sum 完全不知道怎么搞了，因为要累加的 Employee 类中的不同字段，即便我们的 Employee 中重载了 + 操作
+            也不知道要加哪个字段。
+            
+            另外，我们可以还会有：平均值average, 求最小值 min, 求最大值 max, 求中位数 mean 等等。
+            你会发现，算法写出了基本都是一样的，只有其中“累加”操作变成了另外一个操作。
+            面对这么多需求，我们是否可以泛型一些呢？怎样解决这些问题呢？
+        
+       
+        更高维度的抽象：
+        
+            要解决这个问题，我们希望我的这个算法只管遍历，具体要干什么，那是业务逻辑，
+            有外面的定义就好了和我无关，这样一来，代码的重用高了。
+            
+            下面一个抽象度更高的版本，这个版本再叫 sum 就不太合适。这个版本应该是 reduce
+            用于把一个数组 reduce 成一个值。
+            
+            template<class Iter, class T, class Op>
+            T reduce(Iter start, Iter end, I init, Op op){
+                T result = init;
+                while(start != end){
+                    result = op(result, *start);
+                    start++;
+                }
+                return result;
+            }    
+            
+            上面的代码中，我们需要传递一个函数进来。在 STL 中，它是个函数对象，我们还是这套算法，
+            但是 result 不是像前面那样去加，是把整个迭代器值给你一个 operation, 然后有它来做。
+            
+            在 C++ STL 中，与这个 reduce 函数对应的函数名叫 accumulate()， 其实际代码有两个版本。
+            
+            第一个版本就是上面的版本，只不过是用 for 语句而不是 while。
+                
+                template<class InputIt, class T>
+                T accumulate(InputIt first, InputIt last, T init)
+                {
+                    for(;first != last; ++first){
+                        init = init + *first;
+                    }
+                    return init;
+                }
+            
+            第二个版本，更为抽象，因为需要传入一个“二元操作函数” -- BinaryOperation op 来做 accumulate。
+            accumulate 的语义比 sum 更抽象了。
+            
+                template<class InputIt, class T, class BinaryOperation>
+                T accumulate(InputIt first, InputIt last, T init, BinaryOperation op)
+                {
+                    for(; first != last; ++first){
+                        init = op(init, *first);
+                    }
+                    return init;
+                }
+                
+            来看看外面在使用中是什么样子：
+            
+                double sum_salaries = reduce(staff.begin(), staff.end(), 0.0, {return s + e.salary;});
+                double max_salary = reduce(staff.begin(), staff.end(), 0.0, {return s > e.salary?s:e.salary;});
+                    
+        Reduce 函数：
+        
+            我们来看看如何使用 reduce 和其它函数完成一个更为复杂的功能。
+            
+            下面示例中，我们定义了一个函数对象 counter. 这个函数对象需要一个 Cond 的函数对象，它是个条件判断函数，
+            如果满足条件则加 1，否则加 0.
+            
+                template<class T, class Cond>
+                struct counter{
+                    size_t operator()(size_t c, T t)const{
+                        return c + (Cond(t)?1:0)
+                    }
+                }        
                
-                
-                
+            然后，用上面的 counter 函数对象和reduce 函数共同打造一个 counter_if 算法：
+            
+                template<class Iter, class Cond>
+                size_t coint_if(Iter begin, Iter end, Cond c){
+                    return reduce(begin, end, 0, counter<Iter::value_type, Cond>(c));
+                }
+            
+            至于是什么样的条件，这个属于业务逻辑，不是流程控制。
+            
+            当我们需要统计薪资超过 1 万元的员工的数据时，一行代码就够了。
+            
+                size_t cnt = count_if(staff.begin(), staff.end(),{return e.salary > 10000;});
+            
+            Reduce 时可以只对结构体中某些值做 Reduce, 比如说只对 salary > 10000 的人做，只选出这个
+            里面的值，它用 Reduce 就可以达到这步，只要传不同的方式给它，你就可以造成一个新的东西出来。
+            
+            说着说着，就到了函数式编程，函数式编程里，我们可以用很多像 reduce 这样的函数来完成更多
+            的像 STL 里面的 count_if() 这样有具体意义是函数。
+                    
+    7、小结：
+    
+        从 C 到 C++ 的演进这一过程带来的编程方式的变化，你可以看到，在静态类型语言方面解决泛型编程
+        的一些技术和方法，从而感受其中的奥妙和原理。
+        
+        因为形式是多样的，但是原理是相通的。所以，这个过程会非常有助于你更深刻了解更多的编程范式。
+        
+        
+    
+               
             
                 
             
