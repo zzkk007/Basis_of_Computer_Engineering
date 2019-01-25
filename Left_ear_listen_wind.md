@@ -2160,19 +2160,170 @@
         
         在 C++ 的泛型版本中，我们可以看到：
         
-                           
-                       
+            a. 使用 typename T 抽象了数据结构中存储数据的类型。
+            
+            b. 使用 typename Iter，这是不同的数据结构需要自己实现的“迭代器”，这样也就抽象掉了不同类型的数据结构。
+            
+            c. 然后，我们对数据容器的遍历使用了 Iter 中的 ++方法，这是数据容器需要重载的操作符，这样通过操作符重载
+                也就泛型掉了遍历。
+                
+            d. 在函数的入参上使用了 pStart 和 pEnd 来表示遍历的起止。
+            
+            e. 使用 *Iter 来取得这个“指针”的内容。这也是通过重载 * 取值操作来达到泛型。
+            
+            当然，你可能会问，为什么我们不用标准接口 Iter.Next() 取代 ++, 用Iter.GetValue() 来取代*，
+            其实这样做是为了兼容原有 C 语言的编程习惯。
+                               
+            说明一下，所谓的 Iter, 在实际代码中，就是像 vector<int>::iterator 或 map<int,string>::iterator 这样的东西。
+            这是由相应的数据容器来实现和提供的。           
                     
-            
+        注：下面是 C++ STL 中的 find() 函数的代码。
+        
+            template<class InputIterator, class T>
+            InputIterator find(InputIterator first, InputIterator last, const T& val)
+            {
+                while(first != last){
+                    if (*first == val)return first++;
+                    ++first;
+                }
+                return last;
+            }    
+        
+        也许，你觉得到这一步，我们的泛型设计就完成了，其实还远远不够， search 函数只是一个开始，
+        我们还要很多别的算法会让问题变的更为复杂。
                        
- 
-                  
-                        
+    4、 C++ 泛型编程示例 - Sum 函数：
+        
+        
+        
+        C 语言版本：
             
+            long sum(int *a, size_t size){
+                long result = 0;
+                for(int i=0; i<size; i++){
+                    result += a[i];
+                }
+                return result;
+                
+            }
+        
+        再看一下 C++ 泛型版本：
+        
+            template<typename T, typename Iter>
+            T sum(Iter pStart, Iter pEnd){
+                T result = 0;
+                for(Iter p = pStart; p != pEnd; p++){
+                    result += *p;
+                }
+                return result;
+            }
+        
+        这个代码中最大的问题是  T result = 0; 这条语句：
+            那个 0 假设了类型是 int;
+            那个 T 假设了Inter 中出来的类型是 T.
+            
+        这样的假设是有问题的，如果类型不一样，就会导致转型的问题，这会带来非常 buggy 的代码。
+        那么该怎么解决呢？
+        
+    5、C++ 泛型编码的重要技术 - 迭代器
+    
+        我们知道 Iter 在实际调用者那会是一个具体的像 vector<int>::iterator 这样的东西。
+        在这个声明中， int 已经被传入 Iter 中了。所以，定义 result 的 T 应该可以从 Iter 中来。
+        这样就可以保证类型是一样的，而且不会有被转型的问题。                 
+                        
+        所以，我们需要一个精心的实现一个“迭代器”。下面是一个简化版的：
+        
+            template <class T>
+            class container{
+            public:
+                    class iterator{
+                    public:
+                            typedef iterator self_type;
+                            typedef T value_type;
+                            typedef T* pointer;
+                            typedef T& reference;
+                            
+                            reference operator*();
+                            pointer operator->();
+                            bool operator==(const self_type& rhs);
+                            bool operator!=(const self_type& rhs);
+                            self_type operator++() {self_type i = *this; ptr_++; return i;}
+                            self_type operator++(int junk){ptr_++;return *this;}
+                            ...
+                            ...
+                    private:
+                            pointer +ptr;                    
+                    };        
+                    
+                    iterator begin();
+                    iterator end();
+                    ...
+                    ...
+            };     
+            
+        上面迭代器代码只是写出来基本思路，这里有几个关键点：
+        
+            a. 首先，一个迭代器需要和一个容器在一起，因为里面是对这个容器的具体的代码实现。
+            
+            b. 它需要重载一些操作符。比如：取值操作 *、成员操作->、比较操作 == 和 !=,还有遍历等等。
+            
+            c. 然后，还要 typedef 一些类型，比如 value_type，告诉我们容器内的数据的实际类型是什么样子。
+            
+            e. 还有一些，如 begin() 和 end() 的基本操作
+            
+            f. 我们还可以看到其中有一个 pointer _ptr 的内部指针来指向当前的数据（注意，pointer 就是 T*）
+        
+        好了，有了迭代器后，我们还要解决 T result = 0 后面这个 0 的问题，这个事，算法没有办法搞定，最好由
+        用户传入。于是出现了最终的 sum() 版本函数。
+        
+            template<class Iter>
+            typename Iter::value_type
+            sum(Iter start, Iter end, T init){
+                typename Iter::value_type result== init;
+                while(start != end){
+                    result = result + *start;
+                    start++;
+                }
+                return result;
+            }            
                   
-
-
-
+        我们看到 typename Iter::value_type result = init 这条语句是关键。我们解决了所有问题。
+        我们如下使用：
+        
+            container<int> c;
+            container<int>::iterator it = c.begin();
+            sum(c.begin(), c.end(), 0);
+        
+        这就是整个 STL 的泛型方法，其中包括：
+        
+            泛型的数据容器。
+            泛型数据容器的迭代器。
+            然后泛型的算法就很容易写了。
+        
+    6、需要更多的抽象：
+    
+        更为复杂的需求:
+        
+            还能不能做到更为泛型呢？比如：如果我们有这样一个数据结构 Employee, 里面有 vacation（休假天数），以及工资。
+            
+            struct Employee{
+                string naem;
+                string id;
+                int vacation;
+                double salary;
+            }
+            
+        现在我们想计算员工的总薪水，或是总休假天数。
+        
+            vector<Employee> staff;
+            sum(staff.begin(), staff.end(),0);
+        
+        我们的 sum 完全不知道怎么搞了，因为要累加的 Employee 类中的不同字段，即便我们的 Employee 中重载了 + 操作
+        也不知道要加哪个字段。
+        
+        另外，我们可以还会有：平均值average, 求最小值 min, 求最大值 max, 求中位数 mean 等等。
+        
+        
             
                
                 
