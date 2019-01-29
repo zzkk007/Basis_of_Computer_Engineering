@@ -2891,11 +2891,98 @@
                 run_step_of_race()
                 draw()
                 
-                       
-                
-                
-  
+            你会发现，封装成函数后，这些函数都会依赖于共享的变量来同步其状态，于是，在读代码的过程中，
+            每当我们进入到函数里，读到访问了一个外部的变量时，我们马上要去查看这个变量的上下文，然后
+            还要在大脑里推演这个变量的状态，才能知道程序的真正逻辑。也就说，这些函数必须知道器它函数
+            是怎么修改它们之间的共享变量的，所以，这些函数是有状态的。
         
+        函数式的写法：
+            
+            我们知道，有状态并不是一件很好的事情，无论是对代码重用和是并行处理，都有副作用。
+            因此，我们想个办法把这些状态搞掉，于是就出现了函数式编程的编程范式。
+            下面我们看看，这个函数式的方法应该怎么写？
+            
+            from random import random
+            
+            def move_cars(car_position):
+                return map(lambda x:x + 1 if random() > 0.3 else x, car_position)
+                
+            def output_car(car_position):
+                return '_'*car_position
+                
+            def run_step_of_rance(state):
+                return {'time':state['time'] - 1,'car_positions':move_cars(state['car_positions'])}
+                
+            def draw(state):
+                print ''
+                print '\n'.join(map(output_car,state['car_positions']))
+                
+            def race(state):
+                draw(state)
+                if state['time']:
+                    race(run_step_of_race(state))
+                    
+            race({'time':5,'car_positions':[1,1,1]})                        
+                
+            上面的这些函数间通过参数和函数值来传递数据，在函数里没有临时变量。    
+            
+            
+     6、函数式语言里的三套件：
+     
+        函数式语言里的三套件：Map、Reduce 和 Filter
+        
+        我们想把一个字符串数组中的字符串够转换成小写。
+        
+            用常规的面向过程的方式：
+                
+                #传统非正式：
+                upname = ['HAO','CHEN','COOLSHELL']
+                lowname = []
+                for i in range(len(upname)):
+                    lowname.append(upname[i].lower())
+                    
+            如果写成函数式，用 map() 函数，是下面这个样子：
+            
+                #函数式
+                def toUpper(item):
+                    return item.upper()
+                    
+                upper_name = map(toUpper, ['hao','chen','coolshell'])
+                
+                print upper_name
+                
+        再看一个，计算数组平均值的代码：
+        
+            #计算数组中正数的平均值
+            num = [2, -5, 9, 7, -2, 5, 3, 1, 0, -3, 8]
+            positive_num_cnt = 0
+            positive_num_sum = 0
+            for i in range(len(num)):
+                if num[i] > 0:
+                    positive_num_cnt += 1
+                    positive_num_sum += num[i]
+                    
+            if posivite_num_cnt > 0:
+                average = positive_num_sum /positive_num_cnt
+                
+            print average
+            
+        函数式，使用 filter/reduce 函数：
+        
+            #计算数组中帧数的平均值：
+            positive_num = filter(lambda x: x>0, num)
+            average = reduce(lambda x, y: x + y, positive_num) / len(positive_num) 
+            
+        函数式编程，只是描述问题怎么干，不关心业务要干什么
+        
+     7、函数式的 pipeline 模式：
+     
+        pipeline(管道) 借鉴于 Unix  shell 的管道操作--把若干命令串联起来，前面命令的输出成为
+        后面命令的输入，如此完成一个流式计算。
+        
+                  
+                        
+                      
      
      
                 
