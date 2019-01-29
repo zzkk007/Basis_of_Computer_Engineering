@@ -2980,7 +2980,139 @@
         pipeline(管道) 借鉴于 Unix  shell 的管道操作--把若干命令串联起来，前面命令的输出成为
         后面命令的输入，如此完成一个流式计算。
         
-                  
+        比如我们的 shell 命令：
+            
+            ps auwwx | awk '{print $2}' | sort -n | xargs echo
+            
+        抽象成函数的样子，我们可以反过来，一层套一层：
+        
+            xargs(echo, sort(n, awk('print $2', ps(auwwx))))
+            
+        我们也可以把函数放进数组里面，然后顺序执行一下：
+        
+            pids = for_each(reuslt, [ps_auwwx, awk_p2, sort_n, xargs_echo])
+            
+        如果我们把函数比作微服务，那么管道这个是其实就是在做服务的编排。
+        一个好的分布式架构师，通常都是对这些传统的微观上的经典技术有非常深刻的认识，
+        因为这些东西在方法论上都是相通的。
+        
+        看一下如何实现 pipeline, 这个程序的 process() 有三个步骤：找出偶数、乘以3、转成字符串返回。
+        
+            传统非函数式的实现：
+            
+                def process(num):
+                    if num%2 != 0:
+                        return
+                    num = num*3
+                    num = 'The Number: %s' % num
+                    return num
+                    
+                nums = [1,2,3,4,5,6,7,8,9,10]
+                
+                for num in nums:
+                    print process(num)
+                    
+            我们来看一下pipeline 该怎么写：
+            
+                第一步，先把三个字需要写成函数：
+                
+                def even_filter(nums):
+                    for num in nums:
+                        if num % 2 == 0:
+                            yield num
+                            
+                def multiply_by_three(nums):
+                    for num in nums:
+                        yield num * 3
+                
+                def convert_to_string(nums):
+                    for num in nums:
+                        yield 'The Number:%s' % num
+            
+            然后，我们把这个三个函数串起来：
+            
+                nums = [1,2,3,4,5,6,7,8,9,10]
+                
+                pipeline = convert_to_string(multiply_by_three(even_filter(nums)))
+                for num in pipeline:
+                    print num
+                    
+            我们使用 Map & Reduce, 不要使用循环：
+            
+                def even_filter(nums):
+                    return filter(lambda x: x%2 == 0, nums)
+                    
+                def multiply_by_three(nums):
+                    retirn map(lambda x: x*3, nums)
+                    
+                def convert_to_string(nums):
+                    return map(lambda x: 'The Number:%s' % x, nums)
+                    
+                nums = [1,2,3,4,5,6,7,8,9,10]
+                pipeline = convert_to_string(
+                        multiply_by_three(
+                            even_filter(nums)
+                        )
+                )
+                
+                for num in pipeline:
+                    print num
+                    
+            第二种方式：
+                
+                pipeline_func(nums, [even_filter, multiply_by_three, convert_to_string])
+                                             
+            其实，就是一堆函数做一个 reduce, 于是， pipeline 函数可以实现成下面这样：
+            
+                def pipeline_finc(data, fns):
+                    return reduce(lambda a, x: x(a), fns, data)
+                    
+            当然，使用 Python 的 force 函数以及 decorator 模式可以把上面的代码写的更像管道：
+            
+                class Pipe(object):
+                    def __init__(self, func):
+                        self.func = func
+                        
+                    def __ror__(self, other):
+                        def generator():
+                            for obj in other:
+                                if obj is not None:
+                                    yield.self.func(obj)
+                        return generator()
+                
+                @Pipe
+                def even_filter(num):
+                    return num if num % 2 == 0 else None
+                    
+                @Pipe
+                def multiply_by_three(num):
+                    return num*3
+                        
+                @Pipe
+                def conver_to_string(num):
+                    return 'The Number: '%s' % num
+                    
+                @Pipe
+                def echo(item):
+                    print item
+                    return item
+                    
+                def force(sqs):
+                    for item in sqs: pass
+                    
+                nums = [1,2,3,4,5,6,7,8,9,10]
+                force(nums | even_filter | multiply_by_three | convert_to_string | echo)
+                
+     8、小结：
+     
+        相对于计算机发展史，函数式编程是个非常古老的概念，它的核心思想是将运算过程尽量写一些列的嵌套
+        的函数调用，关注的是做什么而不是怎么做，因而被称为声明式编程。
+        以 Stateless (无状态) 和 Immutable(不可变)为主要特点，代码简洁、易于理解、能便于进行并行
+        执行，易于做代码重构，函数执行没有顺序的问题，支持惰性求值，具有函数的确定性。
+        
+        本文结合递归、map 和 reduce, 以及 pipeline 等技术，对比了非函数式编程和函数式编程在解决
+        相同问题时的不同处理思路，让你对函数式编程范式有明确的认知。           
+                                     
                         
                       
      
