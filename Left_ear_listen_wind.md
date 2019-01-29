@@ -2778,11 +2778,120 @@
                   
      4、Lisp 语言简介：
      
-                   
+        要说函数式语言，不可避免地要说一下 Lisp。
+        下面，我们来看看 Scheme 语言（Lisp 的一个方言）的函数式玩法。在 Scheme 里，所有的的操作都是函数，
+        包括加减乘除这样的东西。所以，一个表达式是这样的形式---（函数名  参数 1 参数 1）
+        
+            (define (plus x y) (+ x y))
+            (define (times x y) (* x y))
+            (define (square x) (times x x ))
+            
+        上面三个函数：
+        
+            用内置的 + 函数定义了一个新的 plus 函数。
+            用内置的 * 函数定义了一个新的 times 函数。
+            用这前的 times 函数定义了一个 square 函数。
+            
+        下面是这个函数定义了：f(x) = 5 * x^2 + 10
+            
+            (define (f1 x) ;;; f(x) = 5 * x^2 + 10 (plus 10 (times 5 (square x))))
+            
+        也可以使用 lambda 匿名函数：
+        
+            (define f2
+                (lambda (x)
+                    (define plus
+                        (lambda (a b) (+ a b)))
+                    (define times
+                        (lambda (a b) (* a b)))
+                    (plus 10 (times 5 (times x x)))
+                )
+            )                          
                 
+        在上面的代码中，我们使用 lambda 来定义函数 f2, 然后同样用 lambda 定义了两个函数 -- plus 和 times.
+        最后， 由（plus 10 (times 5(times x x))）定义了 f2。
+        
+        我们看一个阶乘的示例：
+        
+            ;;; recursion  注释
+            (define factoral (lambda (x)
+                (if (<= x 1) 1
+                    (* x (factoral (- x 1)))))
+            (newline)
+            (display(factoral 6))
+            
+        下面是另一个版本，使用尾递归。
+        
+            ;;; another version of recursion  注释
+            (define (factoral_x n)
+                (fefine (iter product counter)
+                    (if (< counter n)
+                        product
+                        (iter (* counter product) (+ (iter 1 1))))))
+                        
+            (newline)
+            (display(factoral_x 5))
+            
+            
+     5、函数式编程的思维方法：
+     
+        函数式编程关注的是： describe what to do, rather than how to do it。
+        于是，我们把过程式编程范式叫做 Imperative Programming -- 指令式编程
+        而把函数式编程范式叫做 Declarative Programming -- 声明式编程。
+        
+        传统方式的写法：
+        
+            比如，我们有 3 辆车比赛，简单起见，我们分别给这 3 辆车 70% 的概率让它们可以往前走一步，
+            一种有 5 次机会，然后打出第一次这 3 量车的前行状态。
+            
+            Imperative Programming 代码如下：   
+            
+            from random import random
+            
+            time = 5
+            car_positions = [1, 1, 1]
+            
+            while time:
+                time -= 1
+                print ''
+                for i in range(len(car_positions)):
+                    #move car
+                    if random() > 0.3:
+                        car_positons[i] += 1
+                    
+                    # draw car
+                    print '_' * car_positions[i]
+                                               
+            我们可以把两重循环变成一些函数模块，这样有利于更容易的阅读代码：
+            
+            from random import random
+            
+            def move_cars():
+                for i, _ in enumerate(car_positions):
+                    if random() > 0.3：
+                        car_positions[i] += 1
+            
+            def draw_car(car_position):
+                print '_'*car_position 
+            
+            def run_step_of_race():
+                global time
+                time -= 1
+                move_cars()
                 
+            def draw():
+                pirnt ''
+                for car_position in car_positions:
+                    draw_car(car_position)
+                    
+            time = 5
+            car_positions = [1, 1, 1]
+            
+            while time:
+                run_step_of_race()
+                draw()
                 
-                
+                       
                 
                 
   
