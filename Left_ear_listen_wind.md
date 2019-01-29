@@ -3113,11 +3113,70 @@
         本文结合递归、map 和 reduce, 以及 pipeline 等技术，对比了非函数式编程和函数式编程在解决
         相同问题时的不同处理思路，让你对函数式编程范式有明确的认知。           
                                      
-                        
-                      
-     
-     
+                       
+"""34| 编程范式游记(5) - 修饰器模式"""                      
+    
+    在上一篇我们介绍了函数式编程，主要讲了函数式编程的主要技术：递归、Map、Reduce、Filter 等。
+    并利用 Python 的 Decorator 和 Generator 功能，将多个函数组成了管道。
+    
+    本文主要讲述 “Decorator 模式”，又叫 “修饰器模式” 或是“装饰器模式”
+    
+    1、 Python 的 Decorator:
+        
+        Python Decorator 完全是语言层面的玩法：一种函数式编程技巧。
+            
+        看一个 Python 修饰器的 Hello World 代码：
+        
+            def hello(fn):
+                def wrapper():
+                    print "hello, %s" % fn.__name__
+                    fn()
+                    print "goodbye, %s" % fn.__name__
+                return wrapper
+            
+            @hello
+            def Hao():
+                print "I am Hao Chen"
                 
+            Hao()
+            
+        我们看一个带参数的玩法：
+        
+        def makeHtmlTag(tag, *args, **kwds):
+            
+            def real_decorator(fn):
+                css_class = " class='{0}'".format(kwds["css_class"]) if "css_class" in kwds else ""
+                
+                def wrapped(*args, **kwds):
+       
+                    return "<"+tag+css_class+">"
+                
+                return wrapped
+            return real_decorator
+            
+        @makeHtmlTag(tag="b", css_class = "bold_css")
+        @makeHtmlTag(tag="i", css_class = "italic_css")
+        def hello():
+            return "hello world"
+            
+        print hello()
+        
+    2、小结：
+    
+        a. 表面上看，装饰器模式就是扩展现有的一个函数的功能，让它可以干一些其他的事情，
+            或是现有的函数功能上再附加上一些别的功能。
+            
+        b. 除了我们可以感受到函数式编程下的代码扩展能力，我们还能感受到函数的互相和随意
+            拼装带来的好处
+            
+        c. Decorator 这个函数其实是可以修饰几乎多有的函数的，于是，这种可以通用与其他函数的编程方式
+            可以很容易地将一些非业务功能的、属于控制类型的代码给抽象出来。
+
+        
+                         
+                
+                
+                                        
             
         
             
