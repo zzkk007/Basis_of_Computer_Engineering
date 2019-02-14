@@ -3325,8 +3325,26 @@
        我们可以简单的认为，__proto__ 是所有对象用于链接原型的一个指针，而 prototype 则是 Function 对象的一个属性
        其主要是用来当需要 new 一个对象时让 __proto__ 指针所指针的地方。
        对于超级对象 Function 而言， Function.__proto__ 就是 Function.prototype。
-       
         
+       var a = {
+            x: 10
+            calculate: function(z){
+                return this.x + this.y + z;
+            }
+       };
+       
+       var b = {
+            y:20
+            __proto__: a
+       };
+       
+       var c = {
+            c:30,
+            __proto__:a
+       }      
+       
+       b.calculate(30); // 60
+       c.calculate(40); // 80
         
        
            
