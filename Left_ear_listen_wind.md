@@ -3431,6 +3431,60 @@
         
         然后，我们定义一个 Student 对象
         
+        // Define Student class
+        var Student = function(fullName, email, school, course){
+            
+            Person.call(this, fullName, email);
+            
+            //Initiallize our Student Propertites
+            this.school = school;
+            this.courses = courses;
+            
+            //override the "introduction" method
+            this.introduction = function(){
+                console.log("Hi, I am" + this.fullName + "I am study of" + this.school + this.courses)
+                
+            };
+            
+            //Add a "exams" method
+            this.takeExams = function(){
+              console.log("This is my exams time")  
+            };
+    
+        }
+        
+        在上面的代码中：
+        
+            a. 使用了 Person.call(this, fullName, email)，call() 或 apply() 都是为了动态
+                改变 this 所指向的对象的内容而出现的。这里的 this 就是 Student.
+                
+            b. 我们重载了introduction()方法，并新增了一个 takeExams() 的方法。
+            
+            虽然，我们这样定义了 Student, 但是它还没有和 Person 发送继承关系。为了让
+            它们发生关系，我们需要修改 Student 的原型。
+            
+            我们可以简单粗暴的赋值： Student.__proto__=Person.prototype.
+            我们还可以使用比较规范的方式：
+            
+            先用 Object.create() 来将 Person.prototype 和 Student.prototype 关联上。
+            然后，修改一下构造函数 Student.prototype.constructor = Student;
+            
+            //Create a Student.prototype object that inherits
+            //from Person.prototype
+            Student.prototype = Object.create(Person.prototype);
+            
+            //set the "constructor" property to refer to Student
+            Student.prototype.constructor = Student;
+            
+            这样，我们就可以使用了
+            var student = new Student("Hao chen","aa@tom.com","xyz","ddd")
+            student.intorduction();
+            student.speak();
+            studnet.takeExams();
+            
+            
+            
+        
         
         
        
