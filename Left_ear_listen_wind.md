@@ -3346,7 +3346,95 @@
        b.calculate(30); // 60
        c.calculate(40); // 80
         
+       再看另一段代码：
        
+       // 一种构造函数写法
+       function Foo(y){
+           this.y = y
+       }   
+       
+       // 修改 Foo 的 prototype, 加入一个成员变量 x
+       Foo.prototype.x = 10
+       
+       // 修改 Foo 的 prototype, 加入一个成员函数 calculate
+       Foo.prototype.caculate = function(z){
+            return this.x + this.y + z;
+       }
+       
+       // 现在，我们用 Foo 这个原型来创建 b 和 c
+       var b = new Foo(20);
+       var c = new Foo(30);
+       
+       // 调用原型中的方法，可以得到正确的值
+       b.calculate(30); //60
+       c.calculate(40); //80
+       
+       Foo.prototype 自动创建了一个属性
+       constructor 这是一个指向函数自己的一个 reference。这样一来，对于实例 b 或 c 来说
+       就能访问到这个继承的 constructor 了。
+       
+    2、 JavaScript 原型编程的面向对象
+    
+        function Person(){}
+        var p = new Person();
+        
+        Person.prototype.name = "Hao Chen";
+        Person.prototype.sayHello = function(){
+            console.log("Hi, I am" + this.name)
+        }   
+        
+        console.log(p.name); // "Hao Chen"
+        p.sayHello(); // "Hi, I am Hao Chen"
+        
+        在上面的例子中：
+        
+        a. 我们先生成了一个空的函数对象 Person();
+        
+        b. 然后将这个空的函数对象 new 出另一个对象， 存在 p 中；
+        
+        c. 这时再改变 Person.prototype, 让其有一个 name 的属性和一个 sayHello() 的方法；
+        
+        d. 我们发现，另外那个 p 的对象也跟着一起改变了。
+        
+        注意一下：
+        
+        a. 当创建 function Person(){} 时，Person.__proto__ 指向 Function.prototype;
+        
+        b. 当创建 var p = new Person() 时，p.__proto__ 指向 Person.Prototype;
+        
+        c. 当修改了 Person.prototype 的内容后，p.__proto__的内容也被改变了。
+        
+        
+    3、在“原型编程”中面向对象的编程玩法:
+    
+        首先，定义一个 Person 类
+        
+        // Define human class
+        var Person = function(fullName, email){
+            this.fullName = fullName;
+            this.email = email;
+            
+            this.speak = function(){
+                console.log("I Speak English");
+            };
+            
+            this.introduction = function(){
+                console.log("Hi, I am" + this.fullName);   
+            };
+        }
+        
+        上面的对象中，包含了：
+            属性：fullName 和 email
+            方法：speak() 和 introduction()
+            
+        其实，方法也是属性
+        
+        然后，我们定义一个 Student 对象
+        
+        
+        
+       
+           
            
         
    
