@@ -202,7 +202,26 @@
         
         sync_binlog 这个参数设置成 1 的时候，表示每次事务的 binlog 都持久化到磁盘。
         
-                 
+        
+"""03| 事务隔离：为什么你改了我还看不见？"""
+
+    
+    简单来说，事务就是要保证一组数据库操作，要么全部成功，要么全部失败。在 MySQL 中，
+    事务支持是在引擎层实现的。
+    
+    1、隔离性和隔离级别：
+    
+        提到事务，你肯定想到 ACID(Atomicity、Consistency、Isolation、Durability,
+        即原子性、一致性、隔离性、持久性)，今天说说“隔离性”。
+        
+        当数据库上有多个事务同时执行的时候，就可能出现脏读(dirty read)、不可重复读(non-repeatable read)
+        幻读(phantom read)的问题，为了解决这些问题，就有了“隔离级别”的概念。
+        
+        隔离的越严实，效率就会越低。我们需要在二者之间寻找一个平衡点。
+        SQL 标准的事务隔离级别包括：读未提交(read uncommitted)、读提交(read committed)
+        可重复读(repeatable read)和串行化(serializable)。
+        
+                     
             
         
         
