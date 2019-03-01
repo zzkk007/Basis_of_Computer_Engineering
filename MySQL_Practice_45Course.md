@@ -219,12 +219,20 @@
         隔离性：指两个以上的事务不会出现交错执行的状态.因为这样可能会导致数据不一致. 
         持久性：指事务运行成功以后,就系统的更新是永久的.不会无缘无故的回滚.
         
-        当数据库上有多个事务同时执行的时候，就可能出现脏读(dirty read)、不可重复读(non-repeatable read)
-        幻读(phantom read)的问题，为了解决这些问题，就有了“隔离级别”的概念。
-        
+        当数据库上有多个事务同时执行的时候，就可能出现
+            脏读(dirty read)、
+            不可重复读(non-repeatable read)
+            幻读(phantom read)的问题，为了解决这些问题，就有了“隔离级别”的概念。
+            
+            
+            
+       
         隔离的越严实，效率就会越低。我们需要在二者之间寻找一个平衡点。
-        SQL 标准的事务隔离级别包括：读未提交(read uncommitted)、读提交(read committed)
-        可重复读(repeatable read)和串行化(serializable)。
+        SQL 标准的事务隔离级别包括：
+            读未提交(read uncommitted)、
+            读提交(read committed)
+            可重复读(repeatable read)
+            串行化(serializable)。
         
         读未提交是指：一个事务还没有提交时，它做的变更就能被别的事务看到。
         
