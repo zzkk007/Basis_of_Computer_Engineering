@@ -301,8 +301,92 @@
         若隔离级别是“串行化”，则在事务 B 执行 “将 1 改成 2”的时候，会被锁住。直到事务 A 提交后，
         事务 B 才可以继续执行，所以 A 的角度看，V1、V2 的值是 1， V3 的值是 2。
         
-                                          
         
+        在实现上，数据库里面会创建一个视图，访问的时候以视图的逻辑结果为准。
+        在“可重复读”隔离级别下，这个视图是在事务启动时创建的，整个事务存在期间都用这个视图。
+        在“读提交”隔离级别下，这个视图是在每个 SQL 语句开始执行的时候创建的。
+        在“读未提交”隔离级别下直接返回记录上的最新值，没有视图的概念。
+        在“串行化”隔离级别下直接用加锁的方式来避免并行访问。
+        
+    3、配置方式：
+    
+        Oracle 数据库的默认隔离级别其实就是“读提交”，因此对于一些从 Orcal 迁移到 MySQL 的应用，
+        为保证数据库隔离级别的一致，你一定要记得将 MySQL 的隔离级别设置为“读提交”
+        
+        SELECT @@tx_isolation;  查看当前事务的隔离级别
+        set session transaction isolation level read uncommitted; 设置事务的隔离级别
+                
+        mysql> SELECT @@tx_isolation;
+        +-----------------+
+        | @@tx_isolation  |
+        +-----------------+
+        | REPEATABLE-READ |
+        +-----------------+
+        1 row in set (0.02 sec)
+        
+        mysql> set session transaction isolation level read uncommitted;
+        Query OK, 0 rows affected (0.02 sec)
+        
+        mysql> SELECT @@tx_isolation;
+        +------------------+
+        | @@tx_isolation   |
+        +------------------+
+        | READ-UNCOMMITTED |
+        +------------------+
+        1 row in set (0.00 sec)
+        
+        mysql> set session transaction isolation level read committed
+            -> ;
+        Query OK, 0 rows affected (0.00 sec)
+        
+        mysql> SELECT @@tx_isolation;                                
+        +----------------+
+        | @@tx_isolation |
+        +----------------+
+        | READ-COMMITTED |
+        +----------------+
+        1 row in set (0.00 sec)
+        
+        mysql> set session transaction isolation level repeatable read;
+        Query OK, 0 rows affected (0.00 sec)
+        
+        mysql> SELECT @@tx_isolation;                                  
+        +-----------------+
+        | @@tx_isolation  |
+        +-----------------+
+        | REPEATABLE-READ |
+        +-----------------+
+        1 row in set (0.00 sec)
+        
+        mysql> set session transaction isolation level serializable;
+        Query OK, 0 rows affected (0.00 sec)
+        
+        mysql> SELECT @@tx_isolation;                               
+        +----------------+
+        | @@tx_isolation |
+        +----------------+
+        | SERIALIZABLE   |
+        +----------------+
+        1 row in set (0.00 sec)
+        
+        
+        总结来说，存在即合理，那个隔离级别都在自己的应用场景。
+        “可重复读”隔离级别就很方便，事务启动时的视图可以认为是静态的，不受其他事务更新的影响。
+        
+    4、事务隔离实现：
+    
+        在 MySQL 中，实际上每条记录在更新的时候都会同时记录一条回滚操作。
+        记录上的最新值，通过回滚操作，都可以得到前一个状态的值。                                                      
+        当没有事务用的回滚日志时，回滚日志会被删除。
+        
+        基于上面情况，不建议使用长事务，长事务意味着系统里面会存在很老的事务视图。
+        由于这些事务随时可能访问数据库里面的任何数据，所以这个事务提交之前，数据库
+        里面它可能用到回滚记录都必须保留，导致大量占用存储空间。
+        
+    5、事务的启动方式：
+    
+            
+            
         
         
         
