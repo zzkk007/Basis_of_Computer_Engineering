@@ -393,9 +393,48 @@
             这个事务就启动了，而且并不会自动提交。这个事务持续存在直到你主动执行 commit 或 rollback 语句
             或者断开连接。
             
-                
+        c、有些客户端连接默认链接成功后先执行set autocommit = 0 的命令，这就导致了接下来的查询都在事务中，
+            如果是长连接，就导致了意味的长事务。
+            
+        建议使用： set autocommit = 1, 通过显式语句的方式启动事务。
         
-    
+        你可以在 infomation_schema 库的 innodeb_trx 这个表中查询长事务，比如下面语句，查找超过60s 的事务：
+        
+        select *from information_schema.innodb_trx where TIME_TO_SEC(timediff(now(),trx_started))>60;            
+        
+        mysql> select *from information_schema.innodb_trx where TIME_TO_SEC(timediff(now(),trx_started))>60; 
+        ERROR 1227 (42000): Access denied; you need (at least one of) the PROCESS privilege(s) for this operation
+        mysql> 
+        mysql> 
+        mysql> desc information_schema.innodb_trx; 
+        +----------------------------+---------------------+------+-----+---------------------+-------+
+        | Field                      | Type                | Null | Key | Default             | Extra |
+        +----------------------------+---------------------+------+-----+---------------------+-------+
+        | trx_id                     | varchar(18)         | NO   |     |                     |       |
+        | trx_state                  | varchar(13)         | NO   |     |                     |       |
+        | trx_started                | datetime            | NO   |     | 0000-00-00 00:00:00 |       |
+        | trx_requested_lock_id      | varchar(81)         | YES  |     | NULL                |       |
+        | trx_wait_started           | datetime            | YES  |     | NULL                |       |
+        | trx_weight                 | bigint(21) unsigned | NO   |     | 0                   |       |
+        | trx_mysql_thread_id        | bigint(21) unsigned | NO   |     | 0                   |       |
+        | trx_query                  | varchar(1024)       | YES  |     | NULL                |       |
+        | trx_operation_state        | varchar(64)         | YES  |     | NULL                |       |
+        | trx_tables_in_use          | bigint(21) unsigned | NO   |     | 0                   |       |
+        | trx_tables_locked          | bigint(21) unsigned | NO   |     | 0                   |       |
+        | trx_lock_structs           | bigint(21) unsigned | NO   |     | 0                   |       |
+        | trx_lock_memory_bytes      | bigint(21) unsigned | NO   |     | 0                   |       |
+        | trx_rows_locked            | bigint(21) unsigned | NO   |     | 0                   |       |
+        | trx_rows_modified          | bigint(21) unsigned | NO   |     | 0                   |       |
+        | trx_concurrency_tickets    | bigint(21) unsigned | NO   |     | 0                   |       |
+        | trx_isolation_level        | varchar(16)         | NO   |     |                     |       |
+        | trx_unique_checks          | int(1)              | NO   |     | 0                   |       |
+        | trx_foreign_key_checks     | int(1)              | NO   |     | 0                   |       |
+        | trx_last_foreign_key_error | varchar(256)        | YES  |     | NULL                |       |
+        | trx_adaptive_hash_latched  | int(1)              | NO   |     | 0                   |       |
+        | trx_adaptive_hash_timeout  | bigint(21) unsigned | NO   |     | 0                   |       |
+        +----------------------------+---------------------+------+-----+---------------------+-------+
+        22 rows in set (0.05 sec)
+
             
             
         
