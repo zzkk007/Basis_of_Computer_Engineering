@@ -660,6 +660,8 @@
             
             这个语句，则其他线程写 t1、读写 t2 的语句都会被阻塞。
             同时，线程 A 在执行 unlock tables 之前，也只能执行读 t1,读写 t2 操作。
+    
+    3、MDL 表锁：
             
         MDL: MDL 不需要显示使用，在访问一个表的时候会被自动加上。MDL 的作用是，保证读写的正确性。
         在MySQL 5.5 版本中引入了 MDL, 当对一个表做增删改查的操作时候，加 MDL 读锁；
@@ -669,11 +671,59 @@
         读写锁之间、写锁之间是互斥的，用来保证变更表结构操作的安全性。
         因此，如果有两个线程要同时给一个表加字段，其中一个要等另一个执行完才能开始执行。
         
-                     
+        给一个表加字段、或者修改字段或者加索引，需要扫描全表数据。操作不慎就会出问题。
+        我们看一下下面的操作序列,表t：
+            
+            session A           session B        session C       session D
+            
+              begin;
+              select *
+              from t limit 1;
         
-                           
+                                selsect *
+                                from t limit 1;                    
         
-           
+                                                  alter table t
+                                                  add f int;
+                                                  (blocked) 
+                                                                   
+                                                                   select *
+                                                                   from t limit 1
+                                                                   (blocked)
+                                                                   
+        session A 先启动，对表 t 加一个 MDL 读锁。由于 session B 需要的也是 MDL 读锁，因此可以正常执行。
+        之后，session C 会被 blocked,因为 session A 的 MDL 读锁还没有释放，而 session C 需要 MDL 写锁，
+        因此，只能被阻塞。
+        
+        如果只有 session C 自己被阻塞没有什么关系，但是之后所有要在表 t 上新申请 MDL 读锁的请求也会被 
+        session C 阻塞。所有的对表增删改查操作都需要先申请 MDL 读锁，都被锁住，等于这个表完全不可以读写了。
+        
+        如果这个表有很频繁查询语句，这个库的线程很快会爆满。事务中的 MDL 锁，在语句执行时申请，但是语句结束
+        之后不会马上释放，而是等到事务提交后再释放。
+        
+    4、如何安全的给表加字段：    
+        
+       a. 首先解决长事务，事务不提交，就会一直占着 MDL 锁。 kill 掉长事务。
+       
+       b. 如果表的访问量很大，kill 未必管用，比较理想的机制是，在 alter table 语句里面设定等待时间，
+          如果在指定时间内拿到 MDL 写锁最好，拿不到也不要阻塞后面业务语句，先放弃，再重试命令重复这个过程。
+          
+       MariaDB 已经合并了 AliSQL 的这个功能，所有两个开源项目都支持 DDL NOWAIT/WAIT n 这个语法：
+       
+        ALTER TABLE tbl_name NOWAIT add column ...
+        ALTER TABLE tbl_name WAIT N add column ...
+    
+    5、小结：    
+       
+       全局锁主要用在逻辑备份过程中。
+       表锁一般都在数据库引擎不支持行锁的时候才会被用到。
+       
+       如果你发现程序里有 lock tables 这样的语句，可能情况是：
+        a. 系统使用的是 MyISAM 这类不支持事务的引擎。
+        
+        b. 引擎升级了，代码还没有升级。
+                 
+            
          
         
         
