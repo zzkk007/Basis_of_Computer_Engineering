@@ -20,11 +20,11 @@
     1、暴力解法:
 
         class Solution:
-        def towSum(self, nums, target):
-            for i in range(len(nums) - 1):
-                for j in range(i + 1, len(nums)):
-                    if target == (nums[i] + nums[j]):
-                        return [i, j]
+            def towSum(self, nums, target):
+                for i in range(len(nums) - 1):
+                    for j in range(i + 1, len(nums)):
+                        if target == (nums[i] + nums[j]):
+                            return [i, j]
 
         S = Solution
         print(S.tomSum(S, [3, 2, 4], 6))
