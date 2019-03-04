@@ -26,7 +26,7 @@
                         if target == (nums[i] + nums[j]):
                             return [i, j]
 
-        S = Solution
+        S = Solution()
         print(S.tomSum(S, [3, 2, 4], 6))
 
         时间复杂度：O(n^2)：
