@@ -1118,13 +1118,52 @@
              
     5、小结：
     
-        特定的算法依赖特定的数据结构，三种时间复杂度都是 O(n^2),
+        特定的算法依赖特定的数据结构，三种时间复杂度都是 O(n^2), 适合小规模的排序。
         冒泡和选择排序，可能纯粹停留在理论层名，学习是为了开拓思维，实际中用到的并不多。
         插入排序还是挺有用的。
+        
+        
 
 """12 排序（下）：如何用快排思想在 O(n) 内查找第 K 大元素"""
 
-    1、归并排序的性能分析：
+    归并排序的原理:
+        
+        归并排序使用的是分治的思想，分治是一种解决问题的处理思想，
+        递归是一种编程技巧，递归来实现分治。
+        
+        def merge(left, right):
+            '''合并操作，将两个有序数组left[]和right[]合并成一个大的有序数组'''
+            #left与right的下标指针
+            l, r = 0, 0
+            result = []
+            while l<len(left) and r<len(right):
+                if left[l] < right[r]:
+                    result.append(left[l])
+                    l += 1
+                else:
+                    result.append(right[r])
+                    r += 1
+            result += left[l:]
+            result += right[r:]
+            return result
+        
+        def merge_sort(alist):
+            if len(alist) <= 1:
+                return alist
+            # 二分分解
+            num = len(alist)//2
+            left = merge_sort(alist[:num])
+            right = merge_sort(alist[num:])
+            # 合并
+            return merge(left,right)   
+    
+        if __name__ == "__main__":
+
+            alist = [54,26,93,17,77,31,44,55,20]
+            sorted_alist = merge_sort(alist)
+            print(sorted_alist)
+
+    2、归并排序的性能分析：
     
         第一，归并排序是稳定的排序算吗？
             归并排序是一个稳定的排序算法
@@ -1138,10 +1177,76 @@
             O(n)
             
     
-    2、快速排序的原理：
+    3、快速排序的原理：
     
+        快排利用的也是分治思想。
+        
+        def quick_sort(alist, start, end):
+            """快速排序"""
+        
+            # 递归的退出条件
+            if start >= end:
+                return
+        
+            # 设定起始元素为要寻找位置的基准元素
+            mid = alist[start]
+        
+            # low为序列左边的由左向右移动的游标
+            low = start
+        
+            # high为序列右边的由右向左移动的游标
+            high = end
+        
+            while low < high:
+                # 如果low与high未重合，high指向的元素不比基准元素小，则high向左移动
+                while low < high and alist[high] >= mid:
+                    high -= 1
+                # 将high指向的元素放到low的位置上
+                alist[low] = alist[high]
+        
+                # 如果low与high未重合，low指向的元素比基准元素小，则low向右移动
+                while low < high and alist[low] < mid:
+                    low += 1
+                # 将low指向的元素放到high的位置上
+                alist[high] = alist[low]
+        
+            # 退出循环后，low与high重合，此时所指位置为基准元素的正确位置
+            # 将基准元素放到该位置
+            alist[low] = mid
+        
+            # 对基准元素左边的子序列进行快速排序
+            quick_sort(alist, start, low-1)
+        
+            # 对基准元素右边的子序列进行快速排序
+            quick_sort(alist, low+1, end)
+        
+        
+        if __name__ == "__main__":
+        
+            alist = [54, 26, 93, 17, 77, 31, 44, 55, 20]
+            print(alist)
+            quick_sort(alist, 0, len(alist) - 1)
+            print(alist)
+    
+    4、快排性能分析：
+    
+        快排是一种原地不稳定的排序算法，
+        时间复杂度 O(nlogn)
                        
-   
+    5、解答开篇：
+    
+        利用快排的核心思想是分治和分区，我们可以分区思想，来解答开篇的问题：
+        O(n) 时间复杂度内求无序数组的第 K 大元素。比如:[4, 2, 12, 3, 5]
+        这样一组数据，第 3 大元素就是。
+         
+        我们选择数组区间 A[0...n-1]的最后一个元素 A[n-1] 作为 pivot, 对数组
+        A[0...n-1]原地分区，这样数组就分成了三部分，A[0...p-1]、A[p]、A[p+1...n-1]。
+        
+        如果 p+1=k, 那么 A[p] 就是要求解的元素，如果 K>p+1,说明第 K 大元素出现在
+        A[p+1...n-1]区间，我们再按照上面的思路递归地在 A[p+1...n-1]这个区间内查找。
+        同理，如果 K<p+1,那我们在 A[0...p-1]区间查找。
+        
+        
         
          
                              
