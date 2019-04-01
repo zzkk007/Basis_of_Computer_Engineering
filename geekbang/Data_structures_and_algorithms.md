@@ -1410,8 +1410,97 @@
                 
 """15|二分查找(上): 如何用最省内存的方式实现快速查找功能"""                
         
+    二分法针对的是一个有序的数据集合，查找思想有点类似   
+    分治思想，
+    每次都通过分区间的中间元素对比，将带查找的区间缩小为之前的一半，
+    直到找到要查找的元素，或者区间被缩小为 0。
+    
+    1、二分法查找的时间复杂度：
+        
+        n/2^k = 1 求得 k = log2n, 时间复杂度是 O(logn)。
+        
+    
+    2、二分查找的递归与非递归实现：
+    
+        def binary(nums, number):
+            low = 0
+            high = len(nums) - 1
+            while low <= high:
+                mid = (low + high) // 2
+                if nums[mid] == number:
+                    return True
+                elif nums[mid] > number:
+                    high = mid - 1
+                else:
+                    low = mid + 1
+            return False
+        
+        if __name__ == "__main__":
+        
+            nums = [1, 4, 5, 8, 9, 12, 23, 33, 44, 56]
+            print(binary(nums, 12))
+        
+        注意：low, high, mid 都是指数组下标，其中low,high表示当前查找的范围，
+        初始 low = 0, high = len(nums) - 1, mid 表示[low, high]中间值。
+        三个出错点：
+        
+            a、循环退出条件：
+                注意是 low<=high, 而不是 low< high
+            
+            b、mid 取值：
+            
+                mid = (low+high)/2 这种写法有问题，因为如果low 和 high 比较大的话
+                两者之和可能会溢出。改进方法是 low + (high-low)/2。
+                更进一步可以将除以2转化成为运算 low + ((high - low) >> 1)
+            
+            c、low 和 high 的更新：
+                
+                low = mid + 1, high = mid - 1, 
+                如果直接写成 low = mid 或者 high = mid，就可能发生死循环。
+                
+            
+        递归实现：
+        
+            def binary(nums, low, high, val):
+                if low > high:
+                    return False
+                mid = low + ((high-low) >> 1)
+                if nums[mid] == val:
+                    return True
+            
+                elif nums[mid] < val:
+                    return binary(nums, mid+1, high, val)
+                else:
+                    return binary(nums, low, mid-1, val)
+            
+            
+            if __name__ == "__main__":
+            
+                nums = [1, 4, 5, 8, 9, 12, 23, 33, 44, 56]
+                print(binary(nums, 0, len(nums)- 1, 22))    
+        
+        
     
     
+    
+    3、二分法应用场景的局限性：
+    
+        首先，二分查找依赖的是顺序表结构，简单的说就是数组。
+        二分查找是否依赖其他数据结构？比如链表，答案是不可以的，
+        主要原因是二分查找算法需要按照下标随机访问元素。
+        
+        其次，二分查找针对的是有序数据。
+        所以，二分查找只能用在插入、删除不频繁，一次排序多次查找的场景中。
+        
+        再次，数据量太小不适合二分查找。
+        
+        最后，数据量太大也不适合二分查找。
+        因为，二分查找底层需要依赖数组这种数据结构，而数组为了支持随机性访问的特性，
+        要求内存空间连续，对内存的要求比较苛刻。
+        
+        
+        
+        
     
     
     
