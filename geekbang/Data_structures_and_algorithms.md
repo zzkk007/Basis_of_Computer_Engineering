@@ -1497,19 +1497,156 @@
         最后，数据量太大也不适合二分查找。
         因为，二分查找底层需要依赖数组这种数据结构，而数组为了支持随机性访问的特性，
         要求内存空间连续，对内存的要求比较苛刻。
+       
         
         
-        
-        
+"""16| 二分查找(下): 如何快速定位 IP 对应的省份地址"""        
     
+    1、四种常见的二分查找变形问题：
     
+        a. 查找第一个值等于给定值的元素
+        
+        b. 查找最后一个值等于给定值的元素
+        
+        c. 查找第一个大于等于给定值的元素
+        
+        d. 查找最后一个小于等于给定值的元素
+        
+    2、变体一：查找第一个值等于给定值的元素
+        
+        有序集合中存在重复的数据，我们希望找到第一个值等于给定值的数据，
+        比如这样一个有序数组 [1, 3, 4, 5, 6, 8, 8, 8, 11, 18]，
+        其中 a[5], a[6], a[7] 的值都等于 8，是重复的数据。我们希望
+        查找到第一个等于 8 的数据，也就是下标是 5 的元素。
+        
+           
+        def binary_search(nums, val):
+            low = 0
+            high = len(nums) - 1
+            while low <= high:
+                mid = low + ((high - low) >> 1)
+                if nums[mid] > val:
+                    high = mid - 1
+                elif nums[mid] < val:
+                    low = mid + 1
+                else:
+                    if (mid == 0) or (nums[mid - 1] != val):
+                        return mid
+                    else:
+                        high = mid - 1
+            return -1
+        if __name__ == "__main__":
+            print(binary_search([1, 3, 4, 5, 6, 8, 8, 8, 11, 18], 8))
+        
+        nums[mid] 要跟查找的 val 的大小关系有三种情况，大于，小于，等于。
+        当 nums[mid] = val 时：如果我们查找的是任意一个值等于给定值的元素，
+        当 nums[mid] 等于要查找的值时， nums[mid] 就是我们要查找的元素。但是
+        如果我们求解的是第一个值等于给定的元素，当 nums[mid] = val 时，我们
+        就需求判断一下，这个 nums[mid] 是不是第一个值等于给定的元素。
+        如果 mid = 0, 那么这个元素已经是数组的第一个元素，那肯定是我们要找到
+        如果 mid 不等于 0，但 nums[mid-1]不等于 val, 那么也说明 nums[mid] 就是
+        我们要找的第一个值等于给定值的元素。
+
+        如果检查发现 nums[mid - 1] = val, 说明mid 不是我们要的元素，
+        更新 high = mid - 1, 因为要找的元素肯定出现在[low, mid - 1]之间。    
+        
+        
+    3、 变体二: 查找最后一个值等于给定值的元素
+        
+        def binary_search(nums, val):
+
+            low = 0
+            high = len(nums) - 1
+        
+            while low <= high:
+        
+                mid = low + ((high - low) >> 1)
+        
+                if nums[mid] > val:
+                    high = mid - 1
+                elif nums[mid] < val:
+                    low = mid + 1
+                else:
+                    if (mid == len(nums) - 1) or (nums[mid + 1] != val):
+                        return mid
+                    else:
+                        low = mid + 1
+        
+            return -1
+        
+        if __name__ == "__main__":
+        
+            print(binary_search([1, 3, 4, 5, 6, 8, 8, 8, 11, 18], 8))
     
                 
+        我们稍微改变一下代码判断 nums[mid] = val 时，mid 是不是最后一个元素，
+        如果不是最后一个元素，那么 low = mid + 1
         
-         
+        
+    4、变体三: 查找第一个大于等于给定值的元素：
+        
+        在有序数组中，查找第一个大于等于给定值的元素，比如，数组中存储的这样一个序列
+        [3, 4, 6, 7, 10] 如果查找第一个大于等于 5 的元素，那就是 6。
+        
+        实际上，实现的思路更前面的两种变形问题的实现思路类似：
+        
+        def binary_search(nums, val):
+
+            low = 0
+            high = len(nums) - 1
+        
+            while low <= high:
+        
+                mid = low + ((high - low) >> 1)
+        
+                if nums[mid] >= val:
+                    if mid == 0 or nums[mid - 1] < val:
+                        return mid
+                    else:
+                        high = mid - 1
+                else:
+                    low = mid + 1
+        
+            return -1
+        
+        if __name__ == "__main__":
+        
+            print(binary_search([3, 4, 6, 7, 10], 5))
+        
+        如果 a[mid - 1] 也是大于等于要查找的值 val, 说明要查找的元素在[low, mid-1]之间，
+        所以，我们将 high = mid - 1。
+        
+    5、 变体四：查找最后一个小于等于给定值的元素：
+    
+        数组中存储 [3, 5, 6, 8, 9, 10], 最后一个小于等于 7 的元素就是 6，
+        
+        def binary_search(nums, val):
+            low = 0
+            high = len(nums) - 1
+            while low <= high:
+                mid = low + ((high - low) >> 1)
+                if nums[mid] > val:
+                    high = mid - 1
+                else:
+                    if mid == len(nums) - 1 or nums[mid + 1] > val:
+                        return mid
+                    else:
+                        low = mid + 1
+            return -1
+        
+        if __name__ == "__main__":
+        
+            print(binary_search([3, 4, 5, 6, 8, 9, 10], 7)) 
                              
-            
-       
+    6、小结：
+    
+        二分法查找更适合使用在“近似”查找问题，在这类问题上，二分查找
+        的优势更加明显。
+        容易出错的细节：终止条件、区间上下界更新方法、返回值的选择。
+        
+                
+                
+"""17|跳表: 为什么 Redis 一定要用跳表来实现有序集合"""          
                 
                  
                         
