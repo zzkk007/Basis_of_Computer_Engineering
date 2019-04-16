@@ -2156,11 +2156,57 @@
             方式，这也是为什么完全二叉树会单独拎出来的原因，也是为什么完全二叉树要求
             最后一层的子节点都靠左的原因。
             
-            
-            
-                    
-                    
+    3、二叉树的遍历：
     
+        前序遍历、中序遍历和后序遍历。其中，前、中、后，表示节点与它的左右子树
+        节点遍历打印的先后顺序。
+        
+        a. 前序遍历是指：
+            对于树中的任意节点来说，先打印这个节点，然后再打印它的左子树，最后打印右子树。
+        
+        b. 中序遍历是指：
+            对于树中的任意节点来说，先打印它在左子树，然后再打印它本身，做好打印它的右子树。
+            
+        c. 后序遍历是指：
+            对于树中的任意节点来说，先打印它的左子树，再打印它的右子树，最后打印这个节点。
+            
+        
+        实际上，二叉树的前、中、后序遍历就是一个递归过程。
+        写递归代码的关键，就是看能不能写成递推公式，
+        而写递推公式的关键就是，如果要解决问题 A,就假设子问题 B、C已经解决，
+        然后再看如何利用 B、C 来解决A。
+        
+        前序遍历：
+            void preOrder(Node *root):
+                if(root == null) return;
+                
+                print root; //伪码，表示打印 root 节点。
+                preOrder(root->left);
+                preOrder(root->right);
+            
+        中序遍历：
+            void preOrder(Node *root):
+                if(root == null) return;
+               
+                preOrder(root->left);
+                print root; //伪码，表示打印 root 节点。
+                preOrder(root->right);    
+        
+        后序遍历：
+            void preOrder(Node *root):
+                if(root == null) return;
+                
+                preOrder(root->left);
+                preOrder(root->right);                 
+                print root; //伪码，表示打印 root 节点。
+                    
+                    
+        遍历的时间复杂度：
+        
+            每个节点最多被访问两次，所以遍历操作是时间复杂度和节点
+            的个数 n 成正比，也就是说二叉树遍历的时间复杂度为 O(n)。
+            
+            
                     
        
             
