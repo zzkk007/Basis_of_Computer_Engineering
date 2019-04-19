@@ -2221,14 +2221,136 @@
         都要小于这个节点的值，而右子树节点的值都要大于这个节点的值。
         
     2、二叉查找树的查找操作：
+        
+        首先，我们先取一个节点，如果它等于我们要查找的数据，那就返回。
+        如果要查找的数据比根节点的值小，那就在左子树中查找；
+        如果要查找是数据比根节点的值大，那就在右子树中递归查找。
+        
+        
+        def find(self, data):
+            treeNode = self.root
+            print(treeNode.elem)
     
+            while treeNode:
+    
+                print(treeNode.elem)
+                if data == treeNode.elem:
+                    return treeNode
+                elif data < treeNode.elem:
+                    treeNode = treeNode.lchild
+                elif data > treeNode.elem:
+                    treeNode = treeNode.rchild
+    
+            return None  
+        
+    3、二叉树的插入操作：
+    
+        二叉查找树的插入过程有点类似查找操作，新插入的数据一般都在叶子节点上，
+        所以，我们只需要从根节点开始，依次比较要插入的数据和节点的大小关系。
+        
+        如果要插入的数据比节点的数据大，并且节点的右子树为空，就将数据之间插入
+        到右子节点的位置。如果不为空，就再递归遍历右子树，查找插入位置。
             
-    
-    
+        def insert(self, data):
+            node = Node(data)
+            treeNode = self.root
+            while treeNode:
+                
+                if data > treeNode.elem:
+                    if treeNode.rchild is None:
+                        treeNode.rchild = node
+                        return
+                    treeNode = treeNode.rchild
+                
+                else:
+                    if treeNode.lchild is None:
+                        treeNode.lchild = node
+                        return 
+                    treeNode = treeNode.lchild    
               
-                    
+              
+    4、二叉查找树的删除操作：                
        
+       二叉查找树的查找、插入操作都比较简单易懂，但是它的删除操作就比较复杂。
+       针对要删除节点的子节点个数的不同，我们需要分三种情况来处理。
+       
+       第一种情况，如果要删除的节点没有子节点，我们只需要直接将父节点中，
+       指向要删除节点的指针置为 null。
+       
+       第二种情况，如果要删除的节点只有一个子节点，我们只需要更新父节点中，
+       指向要删除节点的指针，让它指向要删除节点的子节点就可以了。
+       
+       第三种情况，如果要删除的节点有两个子节点，这就比较复杂。
+       我们需要找到这个节点的右子树中的最小节点，把它替换到
+       要删除的节点上。然后删除点这个最小节点，因为最小节点肯定
+       没有左子节点。
+       
+        def delete(self, data):
+        
+            # treeNode 指向要删除的节点，初始化指向根节点
+            treeNode = self.root 
+            ftreeNode = None   # ftreeNode 记录treeNode 的父节点。
             
+            # 寻找要删除的节点。
+            while treeNode and treeNode.elem != data:
+                ftreeNode = treeNode
+                if data > treeNode.elem:
+                    treeNode = treeNode.rchild
+                else:
+                    treeNode = treeNode.lchild
+            
+            if treeNode is None:
+                return   # 没有找到
+            
+            # 要删除的节点有两个子节点
+            if treeNode.lchild  and  treeNode.rchild:
+                minP = treeNode.rchild
+                minPP = treeNode  # minPP 表示 minP 的父节点
+                while minP.lchild:
+                    minPP = minP
+                    minP = minP.lchild
+                    
+                treeNode.elem = minP.elem  # 将 minP 的数据替换到treeNode 中。
+                treeNode = minP  # 下面就变成了删除 minP 了。
+                ftreeNode = minPP
+                
+            # 删除节点是叶子节点或者仅有一个节点
+            
+            child = None
+            if treeNode.lchild:
+                child = treeNode.lchild
+            elif treeNode.rchild:
+                child = treeNode.rchild
+            else:
+                child = None
+            
+            if ftreeNode is None:
+                self.root = child  # 删除根节点
+            elif ftreeNode.lchild == treeNode:
+                ftreeNode.lchild = child
+            elif
+                ftreeNode.rchild = child
+            
+            
+        实际上，关于二叉搜索树的删除操作，还有非常简单，取巧的方法，
+        就是单纯将要删除的节点标记为“已删除 ，但并不是从书中将这个
+        节点去掉。
+        这样原本删除的节点还需要存储在内存中，比较浪费内存空间。
+        但是删除操作就变得简单很多。而且这种处理方法也没有增加插入
+        查找操作代理实现的难度。
+        
+    5、二叉查找树的其他操作：
+    
+        二叉查找树还支持快速查找最大节点、最小节点、前驱节点、后继节点。
+        
+        二叉查找树除了上面几个操作之外，还有一个重要的特性，就是中序遍历
+        二叉查找树，可以输入有序的数据序列，时间复杂是O(n),非常高效。
+        因此，二叉查找树也叫二叉排序树。           
+
+
+    6、支持重复数据的二叉查找树：
+        
+                
                          
                    
         
