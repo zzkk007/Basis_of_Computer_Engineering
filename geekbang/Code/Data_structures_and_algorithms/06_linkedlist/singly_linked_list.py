@@ -121,10 +121,10 @@ class SinglyLinkedList:
     def print_all(self):
         current = self._head
         if current:
-            print(f"{current.data}", end="")
+            print("{current.data}", end="")
             current = current._next
         while current:
-            print(f"->{current.data}", end="")
+            print("->{current.data}", end="")
             current = current._next
         print("\n", flush=True)
 
