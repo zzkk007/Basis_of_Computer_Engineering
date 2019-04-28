@@ -169,7 +169,7 @@ class SinglyLinkedList():
         not_found = False
         while node.data != value:
             if node.next == None:  # 如果已经到链表的最后一个节点，则表明该链表中没有找到执行Value值的Node节点
-                not_found == True
+                not_found = True
                 break
             else:
                 pro = node
