@@ -2561,6 +2561,30 @@
             的大小关系，我们就互换两个节点，一直重复这个过程，知道父子节点之间
             满足刚说的那种大小关系。
             
+            public class Heap{
+                private int[] a; //数组,从下标 1 开始存储数据
+                private int n;   //堆中可以存放数据的个数
+                private int count; // 堆中已经存储的数据个数
+                
+                public Heap(int capacity){
+                    a = new int[capacity + 1];
+                    n = capacity;    
+                    count = 0;
+                }
+                
+                public void insert(int data){
+                    if(count >= n)return;
+                    ++count;
+                    a[count] = data;
+                    int i = count;
+                
+                    while(i/2 > 0 && a[i] > a[i/2]){ //自下向上堆化
+                        swap(a, i, i/2);  // swap()函数作用，交换下标 i 和 i/2的两个元素。
+                        i = i/2;
+                    }           
+                        
+                }
+            }
             
         b. 删除堆顶元素：
             
@@ -2576,6 +2600,32 @@
             
             因为我们移除的是最后一个元素，而且在堆化的过程中都是交换，
             不会出现数组的空洞，所以堆化出来的结果，肯定满足完全二叉树特性。
+            
+            public void removeMax(){
+                
+                if(count == 0) return -1; //堆中没有数据
+                a[1] = a[count];  //最后一位放入堆顶
+                --count;
+                heapify(a, count, 1);
+            
+            }
+            
+            private void heapify(int [], int n, int i){ // 自上往下堆化
+                while(true){
+                    int maxPos = i;
+                    if(i*2 <=n && a[i] < a[i*2]) maxPos = i*2;
+                    else if(i*2+1 <=n && a[maxPos] < a[i*2+1]) maxPos = i*2+1;
+                    else if(maxPos == i) break;
+                    swap(a, i, maxPos);
+                    i = maxPos;
+                
+                }
+            
+            
+            
+            }
+            
+ 
             
         c. 插入、删除的时间复杂度：
         
